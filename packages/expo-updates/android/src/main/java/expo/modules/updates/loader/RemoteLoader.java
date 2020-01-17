@@ -153,26 +153,36 @@ public class RemoteLoader {
     }
 
     if (mFinishedAssetList.size() + mErroredAssetList.size() + mExistingAssetList.size() == mAssetTotal) {
-      for (AssetEntity asset : mExistingAssetList) {
-        boolean existingAssetFound = mDatabase.assetDao().addExistingAssetToUpdate(mUpdateEntity, asset.url, asset.isLaunchAsset);
-        if (!existingAssetFound) {
-          // the database and filesystem have gotten out of sync
-          // do our best to create a new entry for this file even though it already existed on disk
-          byte[] hash = null;
-          try {
-            hash = UpdateUtils.sha1(new File(mUpdatesDirectory, asset.relativePath));
-          } catch (Exception e) {
+      try {
+        for (AssetEntity asset : mExistingAssetList) {
+          boolean existingAssetFound = mDatabase.assetDao().addExistingAssetToUpdate(mUpdateEntity, asset.url, asset.isLaunchAsset);
+          if (!existingAssetFound) {
+            // the database and filesystem have gotten out of sync
+            // do our best to create a new entry for this file even though it already existed on disk
+            byte[] hash = null;
+            try {
+              hash = UpdateUtils.sha1(new File(mUpdatesDirectory, asset.relativePath));
+            } catch (Exception e) {
+            }
+            asset.downloadTime = new Date();
+            asset.hash = hash;
+            mFinishedAssetList.add(asset);
           }
-          asset.downloadTime = new Date();
-          asset.hash = hash;
-          mFinishedAssetList.add(asset);
         }
+        mDatabase.assetDao().insertAssets(mFinishedAssetList, mUpdateEntity);
+        if (mErroredAssetList.size() == 0) {
+          mDatabase.updateDao().markUpdateReady(mUpdateEntity);
+        }
+      } catch (Exception e) {
+        finishWithError("Error while adding new update to database", e);
+        return;
       }
-      mDatabase.assetDao().insertAssets(mFinishedAssetList, mUpdateEntity);
-      if (mErroredAssetList.size() == 0) {
-        mDatabase.updateDao().markUpdateReady(mUpdateEntity);
+
+      if (mErroredAssetList.size() > 0) {
+        finishWithError("Failed to load all assets", new Exception("Failed to load all assets"));
+      } else {
+        finishWithSuccess();
       }
-      finishWithSuccess();
     }
   }
 }

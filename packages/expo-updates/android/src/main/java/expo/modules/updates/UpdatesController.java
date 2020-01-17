@@ -278,6 +278,8 @@ public class UpdatesController {
               }
             });
       });
+    } else {
+      runReaper();
     }
   }
 
@@ -352,6 +354,8 @@ public class UpdatesController {
 
           Handler handler = new Handler(Looper.getMainLooper());
           handler.post(instanceManager::recreateReactContextInBackground);
+
+          runReaper();
         }
       });
       return true;

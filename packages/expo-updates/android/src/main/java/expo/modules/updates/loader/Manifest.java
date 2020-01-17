@@ -75,20 +75,6 @@ public class Manifest {
     }
 
     JSONArray bundledAssets = manifestJson.optJSONArray("bundledAssets");
-    JSONArray assets = null;
-    if (bundledAssets != null && bundledAssets.length() > 0) {
-      assets = new JSONArray();
-      for (int i = 0; i < bundledAssets.length(); i++) {
-        String bundledAsset = bundledAssets.getString(i);
-        int extensionIndex = bundledAsset.lastIndexOf('.');
-        int prefixLength = "asset_".length();
-        String hash = extensionIndex > 0
-            ? bundledAsset.substring(prefixLength, extensionIndex)
-            : bundledAsset.substring(prefixLength);
-        String type = extensionIndex > 0 ? bundledAsset.substring(extensionIndex + 1) : "";
-
-      }
-    }
 
     return new Manifest(manifestJson, id, commitTime, binaryVersions, manifestJson, bundleUrl, bundledAssets);
   }

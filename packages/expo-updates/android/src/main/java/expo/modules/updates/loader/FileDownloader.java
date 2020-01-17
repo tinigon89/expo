@@ -186,12 +186,6 @@ public class FileDownloader {
             .header("Expo-Platform", "android")
             .header("Expo-Api-Version", "1")
             .header("Expo-Client-Environment", "STANDALONE");
-
-    String binaryVersion = UpdateUtils.getBinaryVersion(context);
-    if (binaryVersion != null) {
-      requestBuilder = requestBuilder.header("Expo-Binary-Version", binaryVersion)
-              .header("Expo-SDK-Version", binaryVersion);
-    }
     return requestBuilder.build();
   }
 
@@ -200,6 +194,8 @@ public class FileDownloader {
             .url(url.toString())
             .header("Accept", "application/expo+json,application/json")
             .header("Expo-Platform", "android")
+            .header("Expo-Api-Version", "1")
+            .header("Expo-Client-Environment", "STANDALONE")
             .header("Expo-JSON-Error", "true")
             .header("Expo-Accept-Signature", "true")
             .header("Expo-Release-Channel", context.getString(R.string.expo_release_channel))

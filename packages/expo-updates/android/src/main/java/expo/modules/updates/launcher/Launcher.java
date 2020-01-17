@@ -62,7 +62,7 @@ public class Launcher {
     mCallback = callback;
     mLaunchedUpdate = getLaunchableUpdate(database, context);
 
-    // verify that we have the launch asset on disk
+    // verify that we have all assets on disk
     // according to the database, we should, but something could have gone wrong on disk
 
     AssetEntity launchAsset = database.updateDao().loadLaunchAsset(mLaunchedUpdate.id);
@@ -84,7 +84,7 @@ public class Launcher {
         if (assetFile != null) {
           mLocalAssetFiles.put(
               asset.url.toString(),
-              assetFile.toString()
+              assetFile.toURI().toString()
           );
         }
       }
@@ -124,7 +124,7 @@ public class Launcher {
     File assetFile = new File(mUpdatesDirectory, asset.relativePath);
     boolean assetFileExists = assetFile.exists();
     if (!assetFileExists) {
-      // something has gone wrong, we're missing the launch asset
+      // something has gone wrong, we're missing this asset
       // first we check to see if a copy is embedded in the binary
       Manifest embeddedManifest = EmbeddedLoader.readEmbeddedManifest(context);
       if (embeddedManifest != null) {
