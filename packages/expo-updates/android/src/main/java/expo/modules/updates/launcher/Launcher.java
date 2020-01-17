@@ -60,7 +60,7 @@ public class Launcher {
       throw new AssertionError("Launcher has already started. Create a new instance in order to launch a new version.");
     }
     mCallback = callback;
-    mLaunchedUpdate = getLaunchableUpdate(database, context);
+    mLaunchedUpdate = getLaunchableUpdate(database);
 
     // verify that we have all assets on disk
     // according to the database, we should, but something could have gone wrong on disk
@@ -95,28 +95,8 @@ public class Launcher {
     }
   }
 
-  public UpdateEntity getLaunchableUpdate(UpdatesDatabase database, Context context) {
+  public UpdateEntity getLaunchableUpdate(UpdatesDatabase database) {
     List<UpdateEntity> launchableUpdates = database.updateDao().loadLaunchableUpdates();
-
-    String versionName = UpdateUtils.getBinaryVersion(context);
-
-    if (versionName != null) {
-      List<UpdateEntity> launchableUpdatesCopy = new ArrayList<>(launchableUpdates);
-      for (UpdateEntity update : launchableUpdatesCopy) {
-        String[] binaryVersions = update.binaryVersions.split(",");
-        boolean matches = false;
-        for (String version : binaryVersions) {
-          if (version.equals(versionName)) {
-            matches = true;
-            break;
-          }
-        }
-        if (!matches) {
-          launchableUpdates.remove(update);
-        }
-      }
-    }
-
     return mSelectionPolicy.selectUpdateToLaunch(launchableUpdates);
   }
 

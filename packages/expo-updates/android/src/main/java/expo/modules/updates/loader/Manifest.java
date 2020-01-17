@@ -27,18 +27,18 @@ public class Manifest {
 
   private UUID mId;
   private Date mCommitTime;
-  private String mBinaryVersions;
+  private String mRuntimeVersion;
   private JSONObject mMetadata;
   private Uri mBundleUrl;
   private JSONArray mAssets;
 
   private JSONObject mManifestJson;
 
-  private Manifest(JSONObject manifestJson, UUID id, Date commitTime, String binaryVersions, JSONObject metadata, Uri bundleUrl, JSONArray assets) {
+  private Manifest(JSONObject manifestJson, UUID id, Date commitTime, String runtimeVersion, JSONObject metadata, Uri bundleUrl, JSONArray assets) {
     mManifestJson = manifestJson;
     mId = id;
     mCommitTime = commitTime;
-    mBinaryVersions = binaryVersions;
+    mRuntimeVersion = runtimeVersion;
     mMetadata = metadata;
     mBundleUrl = bundleUrl;
     mAssets = assets;
@@ -47,21 +47,21 @@ public class Manifest {
   public static Manifest fromBareManifestJson(JSONObject manifestJson) throws JSONException {
     UUID id = UUID.fromString(manifestJson.getString("id"));
     Date commitTime = new Date(manifestJson.getLong("commitTime"));
-    String binaryVersions = manifestJson.getString("binaryVersions");
+    String runtimeVersion = manifestJson.getString("runtimeVersion");
     JSONObject metadata = manifestJson.optJSONObject("metadata");
     Uri bundleUrl = Uri.parse(manifestJson.getString("bundleUrl"));
     JSONArray assets = manifestJson.optJSONArray("assets");
 
-    return new Manifest(manifestJson, id, commitTime, binaryVersions, metadata, bundleUrl, assets);
+    return new Manifest(manifestJson, id, commitTime, runtimeVersion, metadata, bundleUrl, assets);
   }
 
   public static Manifest fromManagedManifestJson(JSONObject manifestJson) throws JSONException {
     UUID id = UUID.fromString(manifestJson.getString("releaseId"));
     String commitTimeString = manifestJson.getString("commitTime");
-    String binaryVersions = manifestJson.getString("sdkVersion");
-    JSONObject binaryVersionsObject = manifestJson.optJSONObject("binaryVersions");
-    if (binaryVersionsObject != null) {
-      binaryVersions = binaryVersionsObject.optString("android", binaryVersions);
+    String runtimeVersion = manifestJson.getString("sdkVersion");
+    JSONObject runtimeVersionObject = manifestJson.optJSONObject("runtimeVersion");
+    if (runtimeVersionObject != null) {
+      runtimeVersion = runtimeVersionObject.optString("android", runtimeVersion);
     }
     Uri bundleUrl = Uri.parse(manifestJson.getString("bundleUrl"));
 
@@ -76,7 +76,7 @@ public class Manifest {
 
     JSONArray bundledAssets = manifestJson.optJSONArray("bundledAssets");
 
-    return new Manifest(manifestJson, id, commitTime, binaryVersions, manifestJson, bundleUrl, bundledAssets);
+    return new Manifest(manifestJson, id, commitTime, runtimeVersion, manifestJson, bundleUrl, bundledAssets);
   }
 
   public JSONObject getRawManifestJson() {
@@ -84,7 +84,7 @@ public class Manifest {
   }
 
   public UpdateEntity getUpdateEntity() {
-    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mBinaryVersions);
+    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion);
     if (mMetadata != null) {
       updateEntity.metadata = mMetadata;
     }

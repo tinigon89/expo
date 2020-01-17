@@ -201,11 +201,11 @@ public class FileDownloader {
             .header("Expo-Release-Channel", context.getString(R.string.expo_release_channel))
             .cacheControl(CacheControl.FORCE_NETWORK);
 
-    String binaryVersion = UpdateUtils.getBinaryVersion(context);
-    if (binaryVersion != null) {
-      requestBuilder = requestBuilder.header("Expo-Binary-Version", binaryVersion)
-          // TODO: fix this
-              .header("Expo-SDK-Version", "36.0.0");
+    String runtimeVersion = context.getString(R.string.expo_runtime_version);
+    if (runtimeVersion.length() > 0) {
+      requestBuilder = requestBuilder.header("Expo-Runtime-Version", runtimeVersion);
+    } else {
+      requestBuilder = requestBuilder.header("Expo-SDK-Version", context.getString(R.string.expo_sdk_version));
     }
     return requestBuilder.build();
   }

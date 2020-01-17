@@ -33,9 +33,9 @@ public class UpdateEntity {
   @NonNull
   public Date commitTime;
 
-  @ColumnInfo(name = "binary_versions")
+  @ColumnInfo(name = "runtime_version")
   @NonNull
-  public String binaryVersions;
+  public String runtimeVersion;
 
   @ColumnInfo(name = "launch_asset_id")
   public Long launchAssetId = null;
@@ -48,9 +48,9 @@ public class UpdateEntity {
   @NonNull
   public boolean keep = false;
 
-  public UpdateEntity(UUID id, Date commitTime, String binaryVersions) {
+  public UpdateEntity(UUID id, Date commitTime, String runtimeVersion) {
     this.id = id;
     this.commitTime = commitTime;
-    this.binaryVersions = binaryVersions;
+    this.runtimeVersion = runtimeVersion;
   }
 }

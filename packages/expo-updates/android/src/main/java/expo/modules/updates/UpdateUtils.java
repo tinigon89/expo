@@ -19,17 +19,6 @@ public class UpdateUtils {
   private static final String TAG = UpdateUtils.class.getSimpleName();
   private static final String UPDATES_DIRECTORY_NAME = ".expo-internal";
 
-  public static String getBinaryVersion(Context context) {
-    String versionName = null;
-    try {
-      PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-      versionName = pInfo.versionName;
-    } catch (PackageManager.NameNotFoundException e) {
-      Log.e(TAG, "Could not determine binary version", e);
-    }
-    return versionName;
-  }
-
   public static File getOrCreateUpdatesDirectory(Context context) {
     File updatesDirectory = new File(context.getFilesDir(), UPDATES_DIRECTORY_NAME);
     boolean exists = updatesDirectory.exists();

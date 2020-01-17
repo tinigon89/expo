@@ -63,7 +63,7 @@ public class UpdatesController {
     mManifestUrl = url;
     mUpdatesDirectory = UpdateUtils.getOrCreateUpdatesDirectory(context);
     mDatabaseHolder = new DatabaseHolder(UpdatesDatabase.getInstance(context));
-    mSelectionPolicy = new SelectionPolicyNewest();
+    mSelectionPolicy = new SelectionPolicyNewest(getRuntimeVersion(context));
     if (context instanceof ReactApplication) {
       mReactNativeHost = ((ReactApplication) context).getReactNativeHost();
     }
@@ -210,7 +210,7 @@ public class UpdatesController {
 
     UpdatesDatabase database = getDatabase();
     mLauncher = new Launcher(mUpdatesDirectory, mSelectionPolicy);
-    if (mSelectionPolicy.shouldLoadNewUpdate(EmbeddedLoader.readEmbeddedManifest(context).getUpdateEntity(), mLauncher.getLaunchableUpdate(database, context))) {
+    if (mSelectionPolicy.shouldLoadNewUpdate(EmbeddedLoader.readEmbeddedManifest(context).getUpdateEntity(), mLauncher.getLaunchableUpdate(database))) {
       new EmbeddedLoader(context, database, mUpdatesDirectory).loadEmbeddedUpdate();
     }
     mLauncher.launch(database, context, new Launcher.LauncherCallback() {
@@ -280,6 +280,18 @@ public class UpdatesController {
       });
     } else {
       runReaper();
+    }
+  }
+
+  private String getRuntimeVersion(Context context) {
+    String runtimeVersion = context.getString(R.string.expo_runtime_version);
+    String sdkVersion = context.getString(R.string.expo_sdk_version);
+    if (runtimeVersion.length() > 0) {
+      return runtimeVersion;
+    } else if (sdkVersion.length() > 0) {
+      return sdkVersion;
+    } else {
+      throw new AssertionError("One of expo_runtime_version or expo_sdk_version must be defined");
     }
   }
 

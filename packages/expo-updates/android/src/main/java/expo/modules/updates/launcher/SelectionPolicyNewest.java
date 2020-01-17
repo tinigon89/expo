@@ -2,7 +2,6 @@ package expo.modules.updates.launcher;
 
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.db.enums.UpdateStatus;
-import expo.modules.updates.launcher.SelectionPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +17,19 @@ import java.util.List;
  */
 public class SelectionPolicyNewest implements SelectionPolicy {
 
+  private String mRuntimeVersion;
+
+  public SelectionPolicyNewest(String runtimeVersion) {
+    mRuntimeVersion = runtimeVersion;
+  }
+
   @Override
   public UpdateEntity selectUpdateToLaunch(List<UpdateEntity> updates) {
     UpdateEntity updateToLaunch = null;
     for (UpdateEntity update : updates) {
+      if (!mRuntimeVersion.equals(update.runtimeVersion)) {
+        continue;
+      }
       if (updateToLaunch == null || updateToLaunch.commitTime.before(update.commitTime)) {
         updateToLaunch = update;
       }
