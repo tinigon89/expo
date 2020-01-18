@@ -14,24 +14,26 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import androidx.annotation.Nullable;
+
 public class UpdateUtils {
 
   private static final String TAG = UpdateUtils.class.getSimpleName();
   private static final String UPDATES_DIRECTORY_NAME = ".expo-internal";
 
-  public static File getOrCreateUpdatesDirectory(Context context) {
+  public static @Nullable File getOrCreateUpdatesDirectory(Context context) {
     File updatesDirectory = new File(context.getFilesDir(), UPDATES_DIRECTORY_NAME);
     boolean exists = updatesDirectory.exists();
     boolean isFile = updatesDirectory.isFile();
     if (!exists || isFile) {
       if (isFile) {
         if (!updatesDirectory.delete()) {
-          throw new AssertionError("Updates directory should not be a file");
+          return null;
         }
       }
 
       if (!updatesDirectory.mkdir()) {
-        throw new AssertionError("Updates directory must exist or be able to be created");
+        return null;
       }
     }
     return updatesDirectory;

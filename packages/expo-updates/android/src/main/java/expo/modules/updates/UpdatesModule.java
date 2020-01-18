@@ -48,6 +48,8 @@ public class UpdatesModule extends ExportedModule {
       constants.put("manifestString", launchedUpdate.metadata.toString());
     }
 
+    constants.put("isEmergencyLaunch", UpdatesController.getInstance().isEmergencyLaunch());
+
     return constants;
   }
 

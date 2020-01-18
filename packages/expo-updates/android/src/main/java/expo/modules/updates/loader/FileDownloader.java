@@ -20,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import expo.modules.updates.db.entity.AssetEntity;
+import expo.modules.updates.launcher.EmergencyLauncher;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -206,6 +207,17 @@ public class FileDownloader {
       requestBuilder = requestBuilder.header("Expo-Runtime-Version", runtimeVersion);
     } else {
       requestBuilder = requestBuilder.header("Expo-SDK-Version", context.getString(R.string.expo_sdk_version));
+    }
+
+    String previousFatalError = EmergencyLauncher.consumeErrorLog(context);
+    if (previousFatalError != null) {
+      // some servers can have max length restrictions for headers,
+      // so we restrict the length of the string to 1024 characters --
+      // this should satisfy the requirements of most servers
+      requestBuilder = requestBuilder.header(
+        "Expo-Fatal-Error",
+        previousFatalError.substring(0, Math.min(1024, previousFatalError.length()))
+      );
     }
     return requestBuilder.build();
   }

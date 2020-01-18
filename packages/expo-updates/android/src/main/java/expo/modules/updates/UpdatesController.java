@@ -18,10 +18,13 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import androidx.annotation.Nullable;
 import expo.modules.updates.db.Reaper;
 import expo.modules.updates.db.UpdatesDatabase;
 import expo.modules.updates.db.entity.UpdateEntity;
+import expo.modules.updates.launcher.EmergencyLauncher;
 import expo.modules.updates.launcher.Launcher;
+import expo.modules.updates.launcher.LauncherWithSelectionPolicy;
 import expo.modules.updates.launcher.SelectionPolicy;
 import expo.modules.updates.launcher.SelectionPolicyNewest;
 import expo.modules.updates.loader.EmbeddedLoader;
@@ -137,8 +140,12 @@ public class UpdatesController {
    * Returns the path on disk to the launch asset (JS bundle) file for the React Native host to use.
    * Blocks until the configured timeout runs out, or a new update has been downloaded and is ready
    * to use (whichever comes sooner). ReactNativeHost.getJSBundleFile() should call into this.
+   *
+   * If this returns null, something has gone wrong and expo-updates has not been able to launch or
+   * find an update to use. In (and only in) this case, `getBundleAssetName()` will return a nonnull
+   * fallback value to use.
    */
-  public synchronized String getLaunchAssetFile() {
+  public synchronized @Nullable String getLaunchAssetFile() {
     while (!mIsReadyToLaunch || !mTimeoutFinished) {
       try {
         wait();
@@ -156,12 +163,25 @@ public class UpdatesController {
   }
 
   /**
+   * Returns the filename of the launch asset (JS bundle) file embedded in the APK bundle, which can
+   * be read using `context.getAssets()`. This is only nonnull if `getLaunchAssetFile` is null and
+   * should only be used in such a situation. ReactNativeHost.getBundleAssetName() should call into
+   * this.
+   */
+  public @Nullable String getBundleAssetName() {
+    if (mLauncher == null) {
+      return null;
+    }
+    return mLauncher.getBundleAssetName();
+  }
+
+  /**
    * Returns a map of the locally downloaded assets for the current update. Keys are the remote URLs
    * of the assets and values are local paths. This should be exported by the Updates JS module and
    * can be used by `expo-asset` or a similar module to override React Native's asset resolution and
    * use the locally downloaded assets.
    */
-  public Map<String, String> getLocalAssetFiles() {
+  public @Nullable Map<String, String> getLocalAssetFiles() {
     if (mLauncher == null) {
       return null;
     }
@@ -186,6 +206,10 @@ public class UpdatesController {
     return mSelectionPolicy;
   }
 
+  public boolean isEmergencyLaunch() {
+    return mLauncher != null && mLauncher instanceof EmergencyLauncher;
+  }
+
   /**
    * Starts the update process to launch a previously-loaded update and (if configured to do so)
    * check for a new update from the server. This method should be called as early as possible in
@@ -193,6 +217,14 @@ public class UpdatesController {
    * @param context the base context of the application, ideally a {@link ReactApplication}
    */
   public synchronized void start(final Context context) {
+    if (mUpdatesDirectory == null) {
+      mLauncher = new EmergencyLauncher(context, new Exception("Updates Directory could not be created"));
+      mIsReadyToLaunch = true;
+      mTimeoutFinished = true;
+      UpdatesController.this.notify();
+      return;
+    }
+
     int delay = 0;
     try {
       delay = Integer.parseInt(context.getString(R.string.expo_updates_launch_wait_ms));
@@ -209,13 +241,20 @@ public class UpdatesController {
     }
 
     UpdatesDatabase database = getDatabase();
-    mLauncher = new Launcher(mUpdatesDirectory, mSelectionPolicy);
-    if (mSelectionPolicy.shouldLoadNewUpdate(EmbeddedLoader.readEmbeddedManifest(context).getUpdateEntity(), mLauncher.getLaunchableUpdate(database))) {
+    LauncherWithSelectionPolicy launcher = new LauncherWithSelectionPolicy(mUpdatesDirectory, mSelectionPolicy);
+    mLauncher = launcher;
+    if (mSelectionPolicy.shouldLoadNewUpdate(EmbeddedLoader.readEmbeddedManifest(context).getUpdateEntity(), launcher.getLaunchableUpdate(database))) {
       new EmbeddedLoader(context, database, mUpdatesDirectory).loadEmbeddedUpdate();
     }
-    mLauncher.launch(database, context, new Launcher.LauncherCallback() {
+    launcher.launch(database, context, new LauncherWithSelectionPolicy.LauncherCallback() {
       @Override
-      public void onFinished() {
+      public void onFailure(Exception e) {
+        mLauncher = new EmergencyLauncher(context, e);
+        onSuccess();
+      }
+
+      @Override
+      public void onSuccess() {
         releaseDatabase();
         synchronized (UpdatesController.this) {
           mIsReadyToLaunch = true;
@@ -243,7 +282,7 @@ public class UpdatesController {
 
               @Override
               public boolean onManifestDownloaded(Manifest manifest) {
-                UpdateEntity launchedUpdate = mLauncher.getLaunchedUpdate();
+                UpdateEntity launchedUpdate = getLaunchedUpdate();
                 if (launchedUpdate == null) {
                   return true;
                 }
@@ -252,10 +291,17 @@ public class UpdatesController {
 
               @Override
               public void onSuccess(UpdateEntity update) {
-                final Launcher newLauncher = new Launcher(mUpdatesDirectory, mSelectionPolicy);
-                newLauncher.launch(database, context, new Launcher.LauncherCallback() {
+                final LauncherWithSelectionPolicy newLauncher = new LauncherWithSelectionPolicy(mUpdatesDirectory, mSelectionPolicy);
+                newLauncher.launch(database, context, new LauncherWithSelectionPolicy.LauncherCallback() {
                   @Override
-                  public void onFinished() {
+                  public void onFailure(Exception e) {
+                    releaseDatabase();
+                    finishTimeout();
+                    Log.e(TAG, "Loaded new update but it failed to launch", e);
+                  }
+
+                  @Override
+                  public void onSuccess() {
                     releaseDatabase();
 
                     if (!mHasLaunched) {
@@ -329,7 +375,7 @@ public class UpdatesController {
 
   private void runReaper() {
     UpdatesDatabase database = getDatabase();
-    Reaper.reapUnusedUpdates(database, mUpdatesDirectory, mLauncher.getLaunchedUpdate(), mSelectionPolicy);
+    Reaper.reapUnusedUpdates(database, mUpdatesDirectory, getLaunchedUpdate(), mSelectionPolicy);
     releaseDatabase();
   }
 
@@ -338,10 +384,15 @@ public class UpdatesController {
       String oldLaunchAssetFile = mLauncher.getLaunchAssetFile();
 
       UpdatesDatabase database = getDatabase();
-      final Launcher newLauncher = new Launcher(mUpdatesDirectory, mSelectionPolicy);
-      newLauncher.launch(database, context, new Launcher.LauncherCallback() {
+      final LauncherWithSelectionPolicy newLauncher = new LauncherWithSelectionPolicy(mUpdatesDirectory, mSelectionPolicy);
+      newLauncher.launch(database, context, new LauncherWithSelectionPolicy.LauncherCallback() {
         @Override
-        public void onFinished() {
+        public void onFailure(Exception e) {
+          Log.e(TAG, "Failed to relaunch; aborting reload", e);
+        }
+
+        @Override
+        public void onSuccess() {
           mLauncher = newLauncher;
           releaseDatabase();
 

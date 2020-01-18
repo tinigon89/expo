@@ -18,11 +18,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import static expo.modules.updates.loader.EmbeddedLoader.BUNDLE_FILENAME;
+
 public class Manifest {
 
   private static String TAG = Manifest.class.getSimpleName();
 
-  private static String BUNDLE_FILENAME = "shell-app.bundle";
   private static String EXPO_ASSETS_URL_BASE = "https://d1wp6m56sqw74a.cloudfront.net/~assets/";
 
   private UUID mId;

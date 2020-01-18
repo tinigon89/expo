@@ -26,7 +26,8 @@ public class EmbeddedLoader {
 
   private static final String TAG = EmbeddedLoader.class.getSimpleName();
 
-  private static final String MANIFEST_FILENAME = "shell-app-manifest.json";
+  public static final String MANIFEST_FILENAME = "shell-app-manifest.json";
+  public static final String BUNDLE_FILENAME = "shell-app.bundle";
 
   private static Manifest sEmbeddedManifest = null;
 

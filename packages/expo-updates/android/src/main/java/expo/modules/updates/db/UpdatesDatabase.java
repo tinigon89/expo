@@ -33,13 +33,6 @@ public abstract class UpdatesDatabase extends RoomDatabase {
       sInstance = Room.databaseBuilder(context, UpdatesDatabase.class, DB_NAME)
               .fallbackToDestructiveMigration()
               .allowMainThreadQueries()
-              .addCallback(new RoomDatabase.Callback() {
-                @Override
-                public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                  super.onCreate(db);
-                  Log.i(TAG, db.getPath());
-                }
-              })
               .build();
     }
     return sInstance;
