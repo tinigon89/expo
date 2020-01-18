@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.DigestInputStream;
@@ -129,6 +130,8 @@ public class EmbeddedLoader {
           asset.relativePath = filename;
           asset.hash = hash;
           mFinishedAssetList.add(asset);
+        } catch (FileNotFoundException e) {
+          throw new AssertionError("APK bundle must contain the expected embedded asset " + asset.assetsFilename);
         } catch (Exception e) {
           mErroredAssetList.add(asset);
         }
