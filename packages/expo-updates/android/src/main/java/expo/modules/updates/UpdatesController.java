@@ -52,6 +52,7 @@ public class UpdatesController {
 
   private Uri mManifestUrl;
   private File mUpdatesDirectory;
+  private Exception mUpdatesDirectoryException;
   private Launcher mLauncher;
   private DatabaseHolder mDatabaseHolder;
   private SelectionPolicy mSelectionPolicy;
@@ -64,11 +65,17 @@ public class UpdatesController {
   private UpdatesController(Context context, Uri url) {
     sInstance = this;
     mManifestUrl = url;
-    mUpdatesDirectory = UpdateUtils.getOrCreateUpdatesDirectory(context);
     mDatabaseHolder = new DatabaseHolder(UpdatesDatabase.getInstance(context));
     mSelectionPolicy = new SelectionPolicyNewest(getRuntimeVersion(context));
     if (context instanceof ReactApplication) {
       mReactNativeHost = ((ReactApplication) context).getReactNativeHost();
+    }
+
+    try {
+      mUpdatesDirectory = UpdateUtils.getOrCreateUpdatesDirectory(context);
+    } catch (Exception e) {
+      mUpdatesDirectoryException = e;
+      mUpdatesDirectory = null;
     }
   }
 
@@ -218,7 +225,7 @@ public class UpdatesController {
    */
   public synchronized void start(final Context context) {
     if (mUpdatesDirectory == null) {
-      mLauncher = new EmergencyLauncher(context, new Exception("Updates Directory could not be created"));
+      mLauncher = new EmergencyLauncher(context, mUpdatesDirectoryException);
       mIsReadyToLaunch = true;
       mTimeoutFinished = true;
       UpdatesController.this.notify();

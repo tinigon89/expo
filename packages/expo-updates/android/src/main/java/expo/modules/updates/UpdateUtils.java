@@ -23,19 +23,16 @@ public class UpdateUtils {
   private static final String TAG = UpdateUtils.class.getSimpleName();
   private static final String UPDATES_DIRECTORY_NAME = ".expo-internal";
 
-  public static @Nullable File getOrCreateUpdatesDirectory(Context context) {
+  public static File getOrCreateUpdatesDirectory(Context context) throws Exception {
     File updatesDirectory = new File(context.getFilesDir(), UPDATES_DIRECTORY_NAME);
     boolean exists = updatesDirectory.exists();
-    boolean isFile = updatesDirectory.isFile();
-    if (!exists || isFile) {
-      if (isFile) {
-        if (!updatesDirectory.delete()) {
-          return null;
-        }
+    if (exists) {
+      if (updatesDirectory.isFile()) {
+        throw new Exception("File already exists at the location of the Updates Directory: " + updatesDirectory.toString() + " ; aborting");
       }
-
+    } else {
       if (!updatesDirectory.mkdir()) {
-        return null;
+        throw new Exception("Failed to create Updates Directory: mkdir() returned false");
       }
     }
     return updatesDirectory;
