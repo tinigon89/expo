@@ -384,9 +384,11 @@ public class UpdatesController {
   }
 
   private void runReaper() {
-    UpdatesDatabase database = getDatabase();
-    Reaper.reapUnusedUpdates(database, mUpdatesDirectory, getLaunchedUpdate(), mSelectionPolicy);
-    releaseDatabase();
+    AsyncTask.execute(() -> {
+      UpdatesDatabase database = getDatabase();
+      Reaper.reapUnusedUpdates(database, mUpdatesDirectory, getLaunchedUpdate(), mSelectionPolicy);
+      releaseDatabase();
+    });
   }
 
   public void relaunchReactApplication(Context context, Launcher.LauncherCallback callback) {
