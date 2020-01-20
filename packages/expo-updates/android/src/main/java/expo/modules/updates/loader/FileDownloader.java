@@ -1,11 +1,12 @@
 package expo.modules.updates.loader;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import expo.modules.updates.R;
 import expo.modules.updates.UpdateUtils;
 
 import org.apache.commons.io.FileUtils;
@@ -200,15 +201,25 @@ public class FileDownloader {
             .header("Expo-Client-Environment", "STANDALONE")
             .header("Expo-JSON-Error", "true")
             .header("Expo-Accept-Signature", "true")
-            .header("Expo-Release-Channel", context.getString(R.string.expo_release_channel))
             .cacheControl(CacheControl.FORCE_NETWORK);
 
-    String runtimeVersion = context.getString(R.string.expo_runtime_version);
-    if (runtimeVersion.length() > 0) {
+    String runtimeVersion = null;
+    String sdkVersion = null;
+    String releaseChannel = "default";
+    try {
+      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+      runtimeVersion = ai.metaData.getString("expo.modules.updates.EXPO_RUNTIME_VERSION");
+      sdkVersion = ai.metaData.getString("expo.modules.updates.EXPO_SDK_VERSION");
+      releaseChannel = ai.metaData.getString("expo.modules.updates.EXPO_RELEASE_CHANNEL", "default");
+    } catch (Exception e) {
+      Log.e(TAG, "Failed to read meta-data from AndroidManifest", e);
+    }
+    if (runtimeVersion != null && runtimeVersion.length() > 0) {
       requestBuilder = requestBuilder.header("Expo-Runtime-Version", runtimeVersion);
     } else {
-      requestBuilder = requestBuilder.header("Expo-SDK-Version", context.getString(R.string.expo_sdk_version));
+      requestBuilder = requestBuilder.header("Expo-SDK-Version", sdkVersion);
     }
+    requestBuilder = requestBuilder.header("Expo-Release-Channel", releaseChannel);
 
     String previousFatalError = EmergencyLauncher.consumeErrorLog(context);
     if (previousFatalError != null) {

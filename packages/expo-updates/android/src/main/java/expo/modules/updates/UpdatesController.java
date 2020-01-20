@@ -1,6 +1,8 @@
 package expo.modules.updates;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -38,8 +40,6 @@ import java.util.Map;
 public class UpdatesController {
 
   private static final String TAG = UpdatesController.class.getSimpleName();
-
-  private static String URL_PLACEHOLDER = "EXPO_APP_URL";
 
   public static final String UPDATES_EVENT_NAME = "Expo.nativeUpdatesEvent";
   public static final String UPDATE_AVAILABLE_EVENT = "updateAvailable";
@@ -90,8 +90,14 @@ public class UpdatesController {
    */
   public static void initialize(Context context) {
     if (sInstance == null) {
-      String urlString = context.getString(R.string.expo_app_url);
-      Uri url = URL_PLACEHOLDER.equals(urlString) ? null : Uri.parse(urlString);
+      Uri url = null;
+      try {
+        ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        String urlString = ai.metaData.getString("expo.modules.updates.EXPO_APP_URL");
+        url = urlString == null ? null : Uri.parse(urlString);
+      } catch (Exception e) {
+        Log.e(TAG, "Could not read value expo.modules.updates.EXPO_APP_URL in AndroidManifest", e);
+      }
       new UpdatesController(context, url);
     }
   }
@@ -234,9 +240,10 @@ public class UpdatesController {
 
     int delay = 0;
     try {
-      delay = Integer.parseInt(context.getString(R.string.expo_updates_launch_wait_ms));
-    } catch (NumberFormatException e) {
-      Log.e(TAG, "Could not parse expo_updates_launch_wait_ms; defaulting to 0", e);
+      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+      delay = ai.metaData.getInt("expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS", 0);
+    } catch (Exception e) {
+      Log.e(TAG, "Could not parse expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS from AndroidManifest; defaulting to 0", e);
     }
 
     if (delay > 0) {
@@ -340,11 +347,18 @@ public class UpdatesController {
   }
 
   private String getRuntimeVersion(Context context) {
-    String runtimeVersion = context.getString(R.string.expo_runtime_version);
-    String sdkVersion = context.getString(R.string.expo_sdk_version);
-    if (runtimeVersion.length() > 0) {
+    String runtimeVersion = null;
+    String sdkVersion = null;
+    try {
+      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+      runtimeVersion = ai.metaData.getString("expo.modules.updates.EXPO_RUNTIME_VERSION");
+      sdkVersion = ai.metaData.getString("expo.modules.updates.EXPO_SDK_VERSION");
+    } catch (Exception e) {
+      Log.e(TAG, "Failed to read meta-data from AndroidManifest", e);
+    }
+    if (runtimeVersion != null && runtimeVersion.length() > 0) {
       return runtimeVersion;
-    } else if (sdkVersion.length() > 0) {
+    } else if (sdkVersion != null && sdkVersion.length() > 0) {
       return sdkVersion;
     } else {
       throw new AssertionError("One of expo_runtime_version or expo_sdk_version must be defined");
@@ -356,7 +370,14 @@ public class UpdatesController {
       return false;
     }
 
-    String developerSetting = context.getString(R.string.expo_updates_check_on_launch);
+    String developerSetting = "ALWAYS";
+    try {
+      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+      developerSetting = ai.metaData.getString("expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH", "ALWAYS");
+    } catch (Exception e) {
+      Log.e(TAG, "Failed to read value expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH in AndroidManifest; defaulting to ALWAYS", e);
+    }
+
     if ("ALWAYS".equals(developerSetting)) {
       return true;
     } else if ("NEVER".equals(developerSetting)) {
