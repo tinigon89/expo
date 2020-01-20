@@ -290,7 +290,7 @@ public class UpdatesController {
               }
 
               @Override
-              public void onSuccess(UpdateEntity update) {
+              public void onSuccess(@Nullable UpdateEntity update) {
                 final LauncherWithSelectionPolicy newLauncher = new LauncherWithSelectionPolicy(mUpdatesDirectory, mSelectionPolicy);
                 newLauncher.launch(database, context, new Launcher.LauncherCallback() {
                   @Override

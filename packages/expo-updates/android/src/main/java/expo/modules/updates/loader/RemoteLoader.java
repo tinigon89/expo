@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import expo.modules.updates.db.enums.UpdateStatus;
 import expo.modules.updates.UpdateUtils;
 import expo.modules.updates.db.UpdatesDatabase;
@@ -32,7 +33,7 @@ public class RemoteLoader {
   public interface LoaderCallback {
     void onFailure(Exception e);
     boolean onManifestDownloaded(Manifest manifest);
-    void onSuccess(UpdateEntity update);
+    void onSuccess(@Nullable UpdateEntity update);
   }
 
   public RemoteLoader(Context context, UpdatesDatabase database, File updatesDirectory) {

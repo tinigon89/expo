@@ -12,6 +12,7 @@ import org.unimodules.core.ModuleRegistry;
 import org.unimodules.core.Promise;
 import org.unimodules.core.interfaces.ExpoMethod;
 
+import androidx.annotation.Nullable;
 import expo.modules.updates.db.UpdatesDatabase;
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.launcher.Launcher;
@@ -144,7 +145,7 @@ public class UpdatesModule extends ExportedModule {
                 }
 
                 @Override
-                public void onSuccess(UpdateEntity update) {
+                public void onSuccess(@Nullable UpdateEntity update) {
                   controller.releaseDatabase();
                   promise.resolve(update == null ? false : update.metadata.toString());
                 }
