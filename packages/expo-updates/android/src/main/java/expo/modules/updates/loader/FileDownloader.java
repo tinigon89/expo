@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import expo.modules.updates.R;
 import expo.modules.updates.UpdateUtils;
 
@@ -36,7 +37,7 @@ public class FileDownloader {
 
   public interface FileDownloadCallback {
     void onFailure(Exception e);
-    void onSuccess(File file, byte[] hash);
+    void onSuccess(File file, @Nullable byte[] hash);
   }
 
   public interface ManifestDownloadCallback {
@@ -81,7 +82,7 @@ public class FileDownloader {
   }
 
   public static void downloadManifest(final Uri url, Context context, final ManifestDownloadCallback callback) {
-    FileDownloader.downloadData(FileDownloader.addHeadersToManifestUrl(url, context), new Callback() {
+    downloadData(addHeadersToManifestUrl(url, context), new Callback() {
       @Override
       public void onFailure(Call call, IOException e) {
         callback.onFailure("Failed to download manifest from uri: " + url, e);
@@ -142,14 +143,14 @@ public class FileDownloader {
       asset.relativePath = filename;
       callback.onSuccess(asset, false);
     } else {
-      FileDownloader.downloadFileToPath(FileDownloader.addHeadersToUrl(asset.url, context), path, new FileDownloader.FileDownloadCallback() {
+      downloadFileToPath(addHeadersToUrl(asset.url, context), path, new FileDownloadCallback() {
         @Override
         public void onFailure(Exception e) {
           callback.onFailure(e, asset);
         }
 
         @Override
-        public void onSuccess(File file, byte[] hash) {
+        public void onSuccess(File file, @Nullable byte[] hash) {
           asset.downloadTime = new Date();
           asset.relativePath = filename;
           asset.hash = hash;
