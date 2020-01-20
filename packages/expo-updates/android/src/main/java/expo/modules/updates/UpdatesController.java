@@ -246,7 +246,7 @@ public class UpdatesController {
     if (mSelectionPolicy.shouldLoadNewUpdate(EmbeddedLoader.readEmbeddedManifest(context).getUpdateEntity(), launcher.getLaunchableUpdate(database))) {
       new EmbeddedLoader(context, database, mUpdatesDirectory).loadEmbeddedUpdate();
     }
-    launcher.launch(database, context, new LauncherWithSelectionPolicy.LauncherCallback() {
+    launcher.launch(database, context, new Launcher.LauncherCallback() {
       @Override
       public void onFailure(Exception e) {
         mLauncher = new EmergencyLauncher(context, e);
@@ -292,7 +292,7 @@ public class UpdatesController {
               @Override
               public void onSuccess(UpdateEntity update) {
                 final LauncherWithSelectionPolicy newLauncher = new LauncherWithSelectionPolicy(mUpdatesDirectory, mSelectionPolicy);
-                newLauncher.launch(database, context, new LauncherWithSelectionPolicy.LauncherCallback() {
+                newLauncher.launch(database, context, new Launcher.LauncherCallback() {
                   @Override
                   public void onFailure(Exception e) {
                     releaseDatabase();
@@ -379,52 +379,54 @@ public class UpdatesController {
     releaseDatabase();
   }
 
-  public boolean reloadReactApplication(Context context) {
-    if (mReactNativeHost != null) {
-      String oldLaunchAssetFile = mLauncher.getLaunchAssetFile();
-
-      UpdatesDatabase database = getDatabase();
-      final LauncherWithSelectionPolicy newLauncher = new LauncherWithSelectionPolicy(mUpdatesDirectory, mSelectionPolicy);
-      newLauncher.launch(database, context, new LauncherWithSelectionPolicy.LauncherCallback() {
-        @Override
-        public void onFailure(Exception e) {
-          Log.e(TAG, "Failed to relaunch; aborting reload", e);
-        }
-
-        @Override
-        public void onSuccess() {
-          mLauncher = newLauncher;
-          releaseDatabase();
-
-          final ReactInstanceManager instanceManager = mReactNativeHost.getReactInstanceManager();
-
-          String newLaunchAssetFile = mLauncher.getLaunchAssetFile();
-          if (newLaunchAssetFile != null && !newLaunchAssetFile.equals(oldLaunchAssetFile)) {
-            // Unfortunately, even though RN exposes a way to reload an application,
-            // it assumes that the JS bundle will stay at the same location throughout
-            // the entire lifecycle of the app. Since we need to change the location of
-            // the bundle, we need to use reflection to set an otherwise inaccessible
-            // field of the ReactInstanceManager.
-            try {
-              JSBundleLoader newJSBundleLoader = JSBundleLoader.createFileLoader(newLaunchAssetFile);
-              Field jsBundleLoaderField = instanceManager.getClass().getDeclaredField("mBundleLoader");
-              jsBundleLoaderField.setAccessible(true);
-              jsBundleLoaderField.set(instanceManager, newJSBundleLoader);
-            } catch (Exception e) {
-              Log.e(TAG, "Could not reset JSBundleLoader in ReactInstanceManager", e);
-            }
-          }
-
-          Handler handler = new Handler(Looper.getMainLooper());
-          handler.post(instanceManager::recreateReactContextInBackground);
-
-          runReaper();
-        }
-      });
-      return true;
-    } else {
-      return false;
+  public void relaunchReactApplication(Context context, Launcher.LauncherCallback callback) {
+    if (mReactNativeHost == null) {
+      callback.onFailure(new Exception("Could not reload application. Ensure you have passed an instance of ReactApplication into UpdatesController.initialize()."));
+      return;
     }
+
+    final String oldLaunchAssetFile = mLauncher.getLaunchAssetFile();
+
+    UpdatesDatabase database = getDatabase();
+    final LauncherWithSelectionPolicy newLauncher = new LauncherWithSelectionPolicy(mUpdatesDirectory, mSelectionPolicy);
+    newLauncher.launch(database, context, new Launcher.LauncherCallback() {
+      @Override
+      public void onFailure(Exception e) {
+        callback.onFailure(e);
+      }
+
+      @Override
+      public void onSuccess() {
+        mLauncher = newLauncher;
+        releaseDatabase();
+
+        final ReactInstanceManager instanceManager = mReactNativeHost.getReactInstanceManager();
+
+        String newLaunchAssetFile = mLauncher.getLaunchAssetFile();
+        if (newLaunchAssetFile != null && !newLaunchAssetFile.equals(oldLaunchAssetFile)) {
+          // Unfortunately, even though RN exposes a way to reload an application,
+          // it assumes that the JS bundle will stay at the same location throughout
+          // the entire lifecycle of the app. Since we need to change the location of
+          // the bundle, we need to use reflection to set an otherwise inaccessible
+          // field of the ReactInstanceManager.
+          try {
+            JSBundleLoader newJSBundleLoader = JSBundleLoader.createFileLoader(newLaunchAssetFile);
+            Field jsBundleLoaderField = instanceManager.getClass().getDeclaredField("mBundleLoader");
+            jsBundleLoaderField.setAccessible(true);
+            jsBundleLoaderField.set(instanceManager, newJSBundleLoader);
+          } catch (Exception e) {
+            Log.e(TAG, "Could not reset JSBundleLoader in ReactInstanceManager", e);
+          }
+        }
+
+        callback.onSuccess();
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(instanceManager::recreateReactContextInBackground);
+
+        runReaper();
+      }
+    });
   }
 
   private void sendEventToReactInstance(final String eventName, final WritableMap params) {

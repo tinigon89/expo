@@ -14,6 +14,7 @@ import org.unimodules.core.interfaces.ExpoMethod;
 
 import expo.modules.updates.db.UpdatesDatabase;
 import expo.modules.updates.db.entity.UpdateEntity;
+import expo.modules.updates.launcher.Launcher;
 import expo.modules.updates.loader.FileDownloader;
 import expo.modules.updates.loader.Manifest;
 import expo.modules.updates.loader.RemoteLoader;
@@ -55,14 +56,16 @@ public class UpdatesModule extends ExportedModule {
 
   @ExpoMethod
   public void reload(final Promise promise) {
-    AsyncTask.execute(() -> {
-      if (UpdatesController.getInstance().reloadReactApplication(getContext())) {
+    UpdatesController.getInstance().relaunchReactApplication(getContext(), new Launcher.LauncherCallback() {
+      @Override
+      public void onFailure(Exception e) {
+        Log.e(TAG, "Failed to relaunch application", e);
+        promise.reject("ERR_UPDATES_RELOAD", e.getMessage(), e);
+      }
+
+      @Override
+      public void onSuccess() {
         promise.resolve(null);
-      } else {
-        promise.reject(
-            "ERR_UPDATES_RELOAD",
-            "Could not reload application. Ensure you have passed an instance of ReactApplication into UpdatesController.initialize()."
-        );
       }
     });
   }

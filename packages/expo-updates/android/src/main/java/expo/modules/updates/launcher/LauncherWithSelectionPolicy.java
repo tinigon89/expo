@@ -35,11 +35,6 @@ public class LauncherWithSelectionPolicy implements Launcher {
 
   private LauncherCallback mCallback = null;
 
-  public interface LauncherCallback{
-    public void onFailure(Exception e);
-    public void onSuccess();
-  }
-
   public LauncherWithSelectionPolicy(File updatesDirectory, SelectionPolicy selectionPolicy) {
     mUpdatesDirectory = updatesDirectory;
     mSelectionPolicy = selectionPolicy;
