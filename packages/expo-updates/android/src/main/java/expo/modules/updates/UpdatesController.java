@@ -311,18 +311,21 @@ public class UpdatesController {
                   public void onSuccess() {
                     releaseDatabase();
 
-                    if (!mHasLaunched) {
+                    boolean hasLaunched = mHasLaunched;
+                    if (!hasLaunched) {
                       mLauncher = newLauncher;
                     }
 
                     finishTimeout();
 
-                    if (update == null) {
-                      sendEventToReactInstance(UPDATE_NO_UPDATE_AVAILABLE_EVENT, null);
-                    } else {
-                      WritableMap params = Arguments.createMap();
-                      params.putString("manifestString", update.metadata.toString());
-                      sendEventToReactInstance(UPDATE_AVAILABLE_EVENT, params);
+                    if (hasLaunched) {
+                      if (update == null) {
+                        sendEventToReactInstance(UPDATE_NO_UPDATE_AVAILABLE_EVENT, null);
+                      } else {
+                        WritableMap params = Arguments.createMap();
+                        params.putString("manifestString", update.metadata.toString());
+                        sendEventToReactInstance(UPDATE_AVAILABLE_EVENT, params);
+                      }
                     }
 
                     runReaper();
