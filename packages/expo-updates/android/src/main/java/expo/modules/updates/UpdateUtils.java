@@ -10,11 +10,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import androidx.annotation.Nullable;
+import expo.modules.updates.db.entity.AssetEntity;
 
 public class UpdateUtils {
 
@@ -39,18 +41,17 @@ public class UpdateUtils {
     return updatesDirectory;
   }
 
-  public static String sha1(String string) {
+  public static String sha1(String string) throws NoSuchAlgorithmException, UnsupportedEncodingException {
     try {
       MessageDigest md = MessageDigest.getInstance("SHA-1");
       byte[] data = string.getBytes("UTF-8");
       md.update(data, 0, data.length);
       byte[] sha1hash = md.digest();
       return bytesToHex(sha1hash);
-    } catch (Exception e) {
+    } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
       Log.e(TAG, "Could not encode via SHA-1", e);
+      throw e;
     }
-    // fall back to returning a uri-encoded string if we can't do SHA-1 for some reason
-    return Uri.encode(string);
   }
 
   public static byte[] sha1(File file) throws NoSuchAlgorithmException, IOException {
@@ -64,6 +65,17 @@ public class UpdateUtils {
       Log.e(TAG, "Failed to hash asset " + file.toString(), e);
       throw e;
     }
+  }
+
+  public static String createFilenameForAsset(AssetEntity asset) {
+    String base;
+    try {
+      base = sha1(asset.url.toString());
+    } catch (Exception e) {
+      // fall back to returning a uri-encoded string if we can't do SHA-1 for some reason
+      base = Uri.encode(asset.url.toString());
+    }
+    return base + "." + asset.type;
   }
 
   // https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java

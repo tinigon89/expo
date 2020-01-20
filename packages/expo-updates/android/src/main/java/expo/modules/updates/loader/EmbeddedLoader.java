@@ -117,7 +117,7 @@ public class EmbeddedLoader {
 
   private void copyAllAssets(ArrayList<AssetEntity> assetList) {
     for (AssetEntity asset : assetList) {
-      String filename = UpdateUtils.sha1(asset.url.toString()) + "." + asset.type;
+      String filename = UpdateUtils.createFilenameForAsset(asset);
       File destination = new File(mUpdatesDirectory, filename);
 
       if (destination.exists()) {

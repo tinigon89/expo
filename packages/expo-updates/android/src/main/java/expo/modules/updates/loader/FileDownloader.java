@@ -135,7 +135,7 @@ public class FileDownloader {
   }
 
   public static void downloadAsset(final AssetEntity asset, File destinationDirectory, Context context, final AssetDownloadCallback callback) {
-    final String filename = UpdateUtils.sha1(asset.url.toString()) + "." + asset.type;
+    final String filename = UpdateUtils.createFilenameForAsset(asset);
     File path = new File(destinationDirectory, filename);
 
     if (path.exists()) {
