@@ -30,10 +30,13 @@ public class EmergencyLauncher implements Launcher {
     Manifest embeddedManifest = EmbeddedLoader.readEmbeddedManifest(context);
     mLocalAssetFiles = new HashMap<>();
     for (AssetEntity asset : embeddedManifest.getAssetEntityList()) {
-      mLocalAssetFiles.put(
-        asset.url.toString(),
-        "asset:///" + asset.assetsFilename
-      );
+      String remoteFilename = asset.url.getLastPathSegment();
+      if (remoteFilename != null) {
+        mLocalAssetFiles.put(
+          remoteFilename,
+          "asset:///" + asset.assetsFilename
+        );
+      }
     }
 
     AsyncTask.execute(() -> {

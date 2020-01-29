@@ -87,9 +87,10 @@ public class LauncherWithSelectionPolicy implements Launcher {
       String filename = asset.relativePath;
       if (filename != null) {
         File assetFile = ensureAssetExists(asset, database, context);
-        if (assetFile != null) {
+        String remoteFilename = asset.url.getLastPathSegment();
+        if (assetFile != null && remoteFilename != null) {
           mLocalAssetFiles.put(
-              asset.url.toString(),
+              remoteFilename,
               assetFile.toURI().toString()
           );
         }
@@ -176,9 +177,10 @@ public class LauncherWithSelectionPolicy implements Launcher {
         mLaunchAssetFile = assetFile.toString();
       }
     } else {
-      if (assetFile != null) {
+      String remoteFilename = asset.url.getLastPathSegment();
+      if (assetFile != null && remoteFilename != null) {
         mLocalAssetFiles.put(
-            asset.url.toString(),
+            remoteFilename,
             assetFile.toString()
         );
       }

@@ -3,6 +3,7 @@ package expo.modules.updates.loader;
 import android.net.Uri;
 import android.util.Log;
 
+import expo.modules.updates.UpdatesController;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 
@@ -15,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -25,6 +27,8 @@ public class Manifest {
   private static String TAG = Manifest.class.getSimpleName();
 
   private static String EXPO_ASSETS_URL_BASE = "https://d1wp6m56sqw74a.cloudfront.net/~assets/";
+  private static String[] EXPO_DOMAINS = new String[] {"expo.io", "exp.host", "expo.test"};
+  private Uri mAssetsUrlBase = null;
 
   private UUID mId;
   private Date mCommitTime;
@@ -114,7 +118,7 @@ public class Manifest {
                 : bundledAsset.substring(prefixLength);
             String type = extensionIndex > 0 ? bundledAsset.substring(extensionIndex + 1) : "";
 
-            AssetEntity assetEntity = new AssetEntity(Uri.parse(EXPO_ASSETS_URL_BASE + hash), type);
+            AssetEntity assetEntity = new AssetEntity(Uri.withAppendedPath(getAssetsUrlBase(), hash), type);
             assetEntity.assetsFilename = bundledAsset;
             assetList.add(assetEntity);
           } catch (JSONException e) {
@@ -140,5 +144,36 @@ public class Manifest {
     }
 
     return assetList;
+  }
+
+  public Uri getAssetsUrlBase() {
+    if (mAssetsUrlBase == null) {
+      Uri manifestUrl = UpdatesController.getInstance().getManifestUrl();
+      String hostname = manifestUrl.getHost();
+      if (hostname == null) {
+        mAssetsUrlBase = Uri.parse(EXPO_ASSETS_URL_BASE);
+      } else {
+        for (String expoDomain : EXPO_DOMAINS) {
+          if (hostname.contains(expoDomain)) {
+            mAssetsUrlBase = Uri.parse(EXPO_ASSETS_URL_BASE);
+            break;
+          }
+        }
+
+        if (mAssetsUrlBase == null) {
+          // use manifest url as the base
+          String assetsPath = getRawManifestJson().optString("assetUrlOverride", "assets");
+          Uri.Builder assetsBaseUrlBuilder = manifestUrl.buildUpon();
+          List<String> segments = manifestUrl.getPathSegments();
+          assetsBaseUrlBuilder.path("");
+          for (int i = 0; i < segments.size() - 1; i++) {
+            assetsBaseUrlBuilder.appendPath(segments.get(i));
+          }
+          assetsBaseUrlBuilder.appendPath(assetsPath);
+          mAssetsUrlBase = assetsBaseUrlBuilder.build();
+        }
+      }
+    }
+    return mAssetsUrlBase;
   }
 }
