@@ -57,6 +57,8 @@ export function getTestModules() {
     modules.push(require('./tests/JSC'));
   }
 
+  modules.push(require('./tests/FirebaseCore'));
+
   if (global.DETOX) {
     modules.push(
       require('./tests/Contacts'),
