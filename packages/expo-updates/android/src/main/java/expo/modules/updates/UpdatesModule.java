@@ -43,21 +43,34 @@ public class UpdatesModule extends ExportedModule {
   @Override
   public Map<String, Object> getConstants() {
     Map<String, Object> constants = new HashMap<>();
-    constants.put("localAssets", UpdatesController.getInstance().getLocalAssetFiles());
 
-    UpdateEntity launchedUpdate = UpdatesController.getInstance().getLaunchedUpdate();
-    if (launchedUpdate != null) {
-      constants.put("manifestString", launchedUpdate.metadata.toString());
+    final UpdatesController controller = UpdatesController.getInstance();
+    if (controller != null) {
+      constants.put("isEmergencyLaunch", UpdatesController.getInstance().isEmergencyLaunch());
+      constants.put("localAssets", UpdatesController.getInstance().getLocalAssetFiles());
+
+      UpdateEntity launchedUpdate = UpdatesController.getInstance().getLaunchedUpdate();
+      if (launchedUpdate != null) {
+        constants.put("manifestString", launchedUpdate.metadata.toString());
+      }
     }
-
-    constants.put("isEmergencyLaunch", UpdatesController.getInstance().isEmergencyLaunch());
 
     return constants;
   }
 
   @ExpoMethod
   public void reload(final Promise promise) {
-    UpdatesController.getInstance().relaunchReactApplication(getContext(), new Launcher.LauncherCallback() {
+    final UpdatesController controller = UpdatesController.getInstance();
+
+    if (controller == null) {
+      promise.reject(
+          "ERR_UPDATES_RELOAD",
+          "The updates module controller has not been properly initialized. If you're in development mode, you cannot use `Updates.reloadAsync`. Otherwise, make sure you have called UpdatesController.initialize()."
+      );
+      return;
+    }
+
+    controller.relaunchReactApplication(getContext(), new Launcher.LauncherCallback() {
       @Override
       public void onFailure(Exception e) {
         Log.e(TAG, "Failed to relaunch application", e);
