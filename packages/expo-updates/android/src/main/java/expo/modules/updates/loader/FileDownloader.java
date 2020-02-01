@@ -69,7 +69,12 @@ public class FileDownloader {
             InputStream inputStream = response.body().byteStream();
             DigestInputStream digestInputStream = new DigestInputStream(inputStream, MessageDigest.getInstance("SHA-1"));
         ) {
-          FileUtils.copyInputStreamToFile(digestInputStream, destination);
+          File tmpFile = new File(destination.getAbsolutePath() + ".tmp");
+          FileUtils.copyInputStreamToFile(digestInputStream, tmpFile);
+          if (!tmpFile.renameTo(destination)) {
+            callback.onFailure(new Exception("File download was successful, but failed to move from temporary to permanent location " + destination.getAbsolutePath()));
+            return;
+          }
 
           MessageDigest md = digestInputStream.getMessageDigest();
           byte[] data = md.digest();
