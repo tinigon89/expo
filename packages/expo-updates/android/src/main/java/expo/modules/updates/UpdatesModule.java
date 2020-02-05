@@ -44,15 +44,19 @@ public class UpdatesModule extends ExportedModule {
   public Map<String, Object> getConstants() {
     Map<String, Object> constants = new HashMap<>();
 
-    final UpdatesController controller = UpdatesController.getInstance();
-    if (controller != null) {
-      constants.put("isEmergencyLaunch", UpdatesController.getInstance().isEmergencyLaunch());
-      constants.put("localAssets", UpdatesController.getInstance().getLocalAssetFiles());
+    try {
+      UpdatesController controller = UpdatesController.getInstance();
+      if (controller != null) {
+        constants.put("isEmergencyLaunch", controller.isEmergencyLaunch());
+        constants.put("localAssets", controller.getLocalAssetFiles());
 
-      UpdateEntity launchedUpdate = UpdatesController.getInstance().getLaunchedUpdate();
-      if (launchedUpdate != null) {
-        constants.put("manifestString", launchedUpdate.metadata.toString());
+        UpdateEntity launchedUpdate = controller.getLaunchedUpdate();
+        if (launchedUpdate != null) {
+          constants.put("manifestString", launchedUpdate.metadata.toString());
+        }
       }
+    } catch (IllegalStateException e) {
+      // do nothing; this is expected in a development client
     }
 
     return constants;
@@ -60,110 +64,104 @@ public class UpdatesModule extends ExportedModule {
 
   @ExpoMethod
   public void reload(final Promise promise) {
-    final UpdatesController controller = UpdatesController.getInstance();
+    try {
+      UpdatesController.getInstance().relaunchReactApplication(getContext(), new Launcher.LauncherCallback() {
+        @Override
+        public void onFailure(Exception e) {
+          Log.e(TAG, "Failed to relaunch application", e);
+          promise.reject("ERR_UPDATES_RELOAD", e.getMessage(), e);
+        }
 
-    if (controller == null) {
+        @Override
+        public void onSuccess() {
+          promise.resolve(null);
+        }
+      });
+    } catch (IllegalStateException e) {
       promise.reject(
-          "ERR_UPDATES_RELOAD",
-          "The updates module controller has not been properly initialized. If you're using a development client, you cannot use `Updates.reloadAsync`. Otherwise, make sure you have called the native method UpdatesController.initialize()."
+        "ERR_UPDATES_RELOAD",
+        "The updates module controller has not been properly initialized. If you're using a development client, you cannot use `Updates.reloadAsync`. Otherwise, make sure you have called the native method UpdatesController.initialize()."
       );
-      return;
     }
-
-    controller.relaunchReactApplication(getContext(), new Launcher.LauncherCallback() {
-      @Override
-      public void onFailure(Exception e) {
-        Log.e(TAG, "Failed to relaunch application", e);
-        promise.reject("ERR_UPDATES_RELOAD", e.getMessage(), e);
-      }
-
-      @Override
-      public void onSuccess() {
-        promise.resolve(null);
-      }
-    });
   }
 
   @ExpoMethod
   public void checkForUpdateAsync(final Promise promise) {
-    final UpdatesController controller = UpdatesController.getInstance();
+    try {
+      final UpdatesController controller = UpdatesController.getInstance();
+      FileDownloader.downloadManifest(controller.getManifestUrl(), getContext(), new FileDownloader.ManifestDownloadCallback() {
+        @Override
+        public void onFailure(String message, Exception e) {
+          promise.reject("ERR_UPDATES_CHECK", message, e);
+          Log.e(TAG, message, e);
+        }
 
-    if (controller == null) {
+        @Override
+        public void onSuccess(Manifest manifest) {
+          UpdateEntity launchedUpdate = controller.getLaunchedUpdate();
+          if (launchedUpdate == null) {
+            // this shouldn't ever happen, but if we don't have anything to compare
+            // the new manifest to, let the user know an update is available
+            promise.resolve(manifest.getRawManifestJson().toString());
+            return;
+          }
+
+          if (controller.getSelectionPolicy().shouldLoadNewUpdate(manifest.getUpdateEntity(), launchedUpdate)) {
+            promise.resolve(manifest.getRawManifestJson().toString());
+          } else {
+            promise.resolve(false);
+          }
+        }
+      });
+    } catch (IllegalStateException e) {
       promise.reject(
-          "ERR_UPDATES_CHECK",
-          "The updates module controller has not been properly initialized. If you're using a development client, you cannot check for updates. Otherwise, make sure you have called the native method UpdatesController.initialize()."
+        "ERR_UPDATES_CHECK",
+        "The updates module controller has not been properly initialized. If you're using a development client, you cannot check for updates. Otherwise, make sure you have called the native method UpdatesController.initialize()."
       );
-      return;
     }
-
-    FileDownloader.downloadManifest(controller.getManifestUrl(), getContext(), new FileDownloader.ManifestDownloadCallback() {
-      @Override
-      public void onFailure(String message, Exception e) {
-        promise.reject("ERR_UPDATES_CHECK", message, e);
-        Log.e(TAG, message, e);
-      }
-
-      @Override
-      public void onSuccess(Manifest manifest) {
-        UpdateEntity launchedUpdate = controller.getLaunchedUpdate();
-        if (launchedUpdate == null) {
-          // this shouldn't ever happen, but if we don't have anything to compare
-          // the new manifest to, let the user know an update is available
-          promise.resolve(manifest.getRawManifestJson().toString());
-          return;
-        }
-
-        if (controller.getSelectionPolicy().shouldLoadNewUpdate(manifest.getUpdateEntity(), launchedUpdate)) {
-          promise.resolve(manifest.getRawManifestJson().toString());
-        } else {
-          promise.resolve(false);
-        }
-      }
-    });
   }
 
   @ExpoMethod
   public void fetchUpdateAsync(final Promise promise) {
-    final UpdatesController controller = UpdatesController.getInstance();
+    try {
+      final UpdatesController controller = UpdatesController.getInstance();
 
-    if (controller == null) {
-      promise.reject(
-          "ERR_UPDATES_FETCH",
-          "The updates module controller has not been properly initialized. If you're using a development client, you cannot fetch updates. Otherwise, make sure you have called the native method UpdatesController.initialize()."
-      );
-      return;
-    }
-
-    AsyncTask.execute(() -> {
-      UpdatesDatabase database = controller.getDatabase();
-      new RemoteLoader(getContext(), database, controller.getUpdatesDirectory())
+      AsyncTask.execute(() -> {
+        UpdatesDatabase database = controller.getDatabase();
+        new RemoteLoader(getContext(), database, controller.getUpdatesDirectory())
           .start(
-              controller.getManifestUrl(),
-              new RemoteLoader.LoaderCallback() {
-                @Override
-                public void onFailure(Exception e) {
-                  controller.releaseDatabase();
-                  promise.reject("ERR_UPDATES_FETCH", "Failed to download new update", e);
-                }
-
-                @Override
-                public boolean onManifestDownloaded(Manifest manifest) {
-                  UpdateEntity launchedUpdate = controller.getLaunchedUpdate();
-                  if (launchedUpdate == null) {
-                    // this shouldn't ever happen, but if we don't have anything to compare
-                    // the new manifest to, let the user know an update is available
-                    return true;
-                  }
-                  return controller.getSelectionPolicy().shouldLoadNewUpdate(manifest.getUpdateEntity(), launchedUpdate);
-                }
-
-                @Override
-                public void onSuccess(@Nullable UpdateEntity update) {
-                  controller.releaseDatabase();
-                  promise.resolve(update == null ? false : update.metadata.toString());
-                }
+            controller.getManifestUrl(),
+            new RemoteLoader.LoaderCallback() {
+              @Override
+              public void onFailure(Exception e) {
+                controller.releaseDatabase();
+                promise.reject("ERR_UPDATES_FETCH", "Failed to download new update", e);
               }
+
+              @Override
+              public boolean onManifestDownloaded(Manifest manifest) {
+                UpdateEntity launchedUpdate = controller.getLaunchedUpdate();
+                if (launchedUpdate == null) {
+                  // this shouldn't ever happen, but if we don't have anything to compare
+                  // the new manifest to, let the user know an update is available
+                  return true;
+                }
+                return controller.getSelectionPolicy().shouldLoadNewUpdate(manifest.getUpdateEntity(), launchedUpdate);
+              }
+
+              @Override
+              public void onSuccess(@Nullable UpdateEntity update) {
+                controller.releaseDatabase();
+                promise.resolve(update == null ? false : update.metadata.toString());
+              }
+            }
           );
-    });
+      });
+    } catch (IllegalStateException e) {
+      promise.reject(
+        "ERR_UPDATES_FETCH",
+        "The updates module controller has not been properly initialized. If you're using a development client, you cannot fetch updates. Otherwise, make sure you have called the native method UpdatesController.initialize()."
+      );
+    }
   }
 }

@@ -80,6 +80,9 @@ public class UpdatesController {
   }
 
   public static UpdatesController getInstance() {
+    if (sInstance == null) {
+      throw new IllegalStateException("UpdatesController.getInstance() was called before the module was initialized");
+    }
     return sInstance;
   }
 
