@@ -42,7 +42,7 @@ public class AssetEntity {
 
   @ColumnInfo(name = "hash_type")
   @NonNull
-  public HashType hashType = HashType.SHA1;
+  public HashType hashType = HashType.SHA256;
 
   @ColumnInfo(name = "marked_for_deletion")
   @NonNull

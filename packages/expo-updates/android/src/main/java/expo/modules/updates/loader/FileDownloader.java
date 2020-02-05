@@ -9,16 +9,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import expo.modules.updates.UpdateUtils;
 
-import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import expo.modules.updates.db.entity.AssetEntity;
@@ -69,21 +65,12 @@ public class FileDownloader {
 
         try (
             InputStream inputStream = response.body().byteStream();
-            DigestInputStream digestInputStream = new DigestInputStream(inputStream, MessageDigest.getInstance("SHA-1"));
         ) {
-          File tmpFile = new File(destination.getAbsolutePath() + ".tmp");
-          FileUtils.copyInputStreamToFile(digestInputStream, tmpFile);
-          if (!tmpFile.renameTo(destination)) {
-            callback.onFailure(new Exception("File download was successful, but failed to move from temporary to permanent location " + destination.getAbsolutePath()));
-            return;
-          }
-
-          MessageDigest md = digestInputStream.getMessageDigest();
-          byte[] data = md.digest();
-          callback.onSuccess(destination, data);
-        } catch (NoSuchAlgorithmException | NullPointerException e) {
-          Log.e(TAG, "Could got get SHA-1 hash of file", e);
-          callback.onSuccess(destination, null);
+          byte[] hash = UpdateUtils.sha256AndWriteToFile(inputStream, destination);
+          callback.onSuccess(destination, hash);
+        } catch (Exception e) {
+          Log.e(TAG, "Failed to download file to destination " + destination.toString(), e);
+          callback.onFailure(e);
         }
       }
     });

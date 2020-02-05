@@ -163,7 +163,7 @@ public class RemoteLoader {
             // do our best to create a new entry for this file even though it already existed on disk
             byte[] hash = null;
             try {
-              hash = UpdateUtils.sha1(new File(mUpdatesDirectory, asset.relativePath));
+              hash = UpdateUtils.sha256(new File(mUpdatesDirectory, asset.relativePath));
             } catch (Exception e) {
             }
             asset.downloadTime = new Date();

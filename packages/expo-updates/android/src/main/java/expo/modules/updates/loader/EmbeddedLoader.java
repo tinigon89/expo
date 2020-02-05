@@ -3,6 +3,7 @@ package expo.modules.updates.loader;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import expo.modules.updates.db.enums.UpdateStatus;
 import expo.modules.updates.UpdateUtils;
 import expo.modules.updates.db.UpdatesDatabase;
@@ -79,15 +80,12 @@ public class EmbeddedLoader {
     return sEmbeddedManifest;
   }
 
-  public static byte[] copyAssetAndGetHash(AssetEntity asset, File destination, Context context) throws NoSuchAlgorithmException, IOException {
+  public static @Nullable byte[] copyAssetAndGetHash(AssetEntity asset, File destination, Context context) throws NoSuchAlgorithmException, IOException {
     try (
-        InputStream inputStream = context.getAssets().open(asset.assetsFilename);
-        DigestInputStream digestInputStream = new DigestInputStream(inputStream, MessageDigest.getInstance("SHA-1"))
+        InputStream inputStream = context.getAssets().open(asset.assetsFilename)
     ) {
-      FileUtils.copyInputStreamToFile(digestInputStream, destination);
-      MessageDigest md = digestInputStream.getMessageDigest();
-      return md.digest();
-    } catch (NoSuchAlgorithmException | IOException e) {
+      return UpdateUtils.sha256AndWriteToFile(inputStream, destination);
+    } catch (Exception e) {
       Log.e(TAG, "Failed to copy asset " + asset.assetsFilename, e);
       throw e;
     }
@@ -127,10 +125,9 @@ public class EmbeddedLoader {
         mExistingAssetList.add(asset);
       } else {
         try {
-          byte[] hash = copyAssetAndGetHash(asset, destination, mContext);
+          asset.hash = copyAssetAndGetHash(asset, destination, mContext);
           asset.downloadTime = new Date();
           asset.relativePath = filename;
-          asset.hash = hash;
           mFinishedAssetList.add(asset);
         } catch (FileNotFoundException e) {
           throw new AssertionError("APK bundle must contain the expected embedded asset " + asset.assetsFilename);
@@ -147,7 +144,7 @@ public class EmbeddedLoader {
         // do our best to create a new entry for this file even though it already existed on disk
         byte[] hash = null;
         try {
-          hash = UpdateUtils.sha1(new File(mUpdatesDirectory, asset.relativePath));
+          hash = UpdateUtils.sha256(new File(mUpdatesDirectory, asset.relativePath));
         } catch (Exception e) {
         }
         asset.downloadTime = new Date();

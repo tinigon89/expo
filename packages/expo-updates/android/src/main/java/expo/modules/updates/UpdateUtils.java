@@ -1,10 +1,10 @@
 package expo.modules.updates;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,23 +38,23 @@ public class UpdateUtils {
     return updatesDirectory;
   }
 
-  public static String sha1(String string) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+  public static String sha256(String string) throws NoSuchAlgorithmException, UnsupportedEncodingException {
     try {
-      MessageDigest md = MessageDigest.getInstance("SHA-1");
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
       byte[] data = string.getBytes("UTF-8");
       md.update(data, 0, data.length);
       byte[] sha1hash = md.digest();
       return bytesToHex(sha1hash);
     } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-      Log.e(TAG, "Could not encode via SHA-1", e);
+      Log.e(TAG, "Could not encode via SHA-256", e);
       throw e;
     }
   }
 
-  public static byte[] sha1(File file) throws NoSuchAlgorithmException, IOException {
+  public static byte[] sha256(File file) throws NoSuchAlgorithmException, IOException {
     try (
         InputStream inputStream = new FileInputStream(file);
-        DigestInputStream digestInputStream = new DigestInputStream(inputStream, MessageDigest.getInstance("SHA-1"))
+        DigestInputStream digestInputStream = new DigestInputStream(inputStream, MessageDigest.getInstance("SHA-256"))
     ) {
       MessageDigest md = digestInputStream.getMessageDigest();
       return md.digest();
@@ -64,12 +64,41 @@ public class UpdateUtils {
     }
   }
 
+  public static @Nullable byte[] sha256AndWriteToFile(InputStream inputStream, File destination) throws NoSuchAlgorithmException, IOException {
+    boolean fileWriteSuccess = false;
+    try (
+      DigestInputStream digestInputStream = new DigestInputStream(inputStream, MessageDigest.getInstance("SHA-256"))
+    ) {
+      // write file atomically by writing it to a temporary path and then renaming
+      // this protects us against partially written files if the process is interrupted
+      File tmpFile = new File(destination.getAbsolutePath() + ".tmp");
+      FileUtils.copyInputStreamToFile(digestInputStream, tmpFile);
+      fileWriteSuccess = tmpFile.renameTo(destination);
+      if (!fileWriteSuccess) {
+        throw new IOException("File download was successful, but failed to move from temporary to permanent location " + destination.getAbsolutePath());
+      }
+
+      MessageDigest md = digestInputStream.getMessageDigest();
+      return md.digest();
+    } catch (NoSuchAlgorithmException | IOException | NullPointerException e) {
+      if (fileWriteSuccess) {
+        // if the file was written successfully and we just couldn't hash it, return null
+        // and let the caller handle having a null hash
+        Log.e(TAG, "Could not get SHA-256 hash of file", e);
+        return null;
+      } else {
+        // otherwise, the file was not written successfully so we need to throw
+        throw e;
+      }
+    }
+  }
+
   public static String createFilenameForAsset(AssetEntity asset) {
     String base;
     try {
-      base = sha1(asset.url.toString());
+      base = sha256(asset.url.toString());
     } catch (Exception e) {
-      // fall back to returning a uri-encoded string if we can't do SHA-1 for some reason
+      // fall back to returning a uri-encoded string if we can't do SHA-256 for some reason
       base = Uri.encode(asset.url.toString());
     }
     return base + "." + asset.type;

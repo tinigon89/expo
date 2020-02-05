@@ -119,11 +119,11 @@ public class Converters {
 
   @TypeConverter
   public static HashType intToHashType(int value) {
-    return HashType.SHA1; // only one hash type for now, SHA1 = 0
+    return HashType.SHA256; // only one hash type for now, SHA256 = 0
   }
 
   @TypeConverter
   public static int hashTypeToInt(HashType hashType) {
-    return 0; // only one hash type for now, SHA1 = 0
+    return 0; // only one hash type for now, SHA256 = 0
   }
 }
