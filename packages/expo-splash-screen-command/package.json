@@ -1,9 +1,12 @@
 {
-  "name": "expo-splash-screen",
+  "name": "expo-splash-screen-command",
   "version": "1.0.0",
-  "description": "Expo module that allows you to show native SplashScreen/LaunchScreen view before your app is ready to display it's content.",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "description": "ExpoSplashScreen standalone module",
+  "main": "build/SplashScreen.js",
+  "types": "build/SplashScreen.d.ts",
+  "bin": {
+    "expo-splash-screen": "./bin/configure.js"
+  },
   "scripts": {
     "build": "expo-module build",
     "clean": "expo-module clean",
@@ -17,10 +20,7 @@
     "react-native",
     "expo",
     "expo-splash-screen",
-    "splash-screen",
-    "splash",
-    "launch-screen",
-    "launch"
+    "expo-splash-screen-command"
   ],
   "repository": {
     "type": "git",
@@ -33,15 +33,26 @@
   "author": "650 Industries, Inc.",
   "license": "MIT",
   "homepage": "https://docs.expo.io/versions/latest/sdk/module-template",
-  "unimodulePeerDependencies": {
-    "@unimodules/core": "*"
+  "engines": {
+    "node": ">=10"
   },
   "dependencies": {
-    "expo-module-scripts": "^1.2.0",
-    "fbemitter": "2.1.1",
-    "expo-splash-screen-command": "1.0.0"
+    "@expo/commander": "^2.21.1",
+    "@react-native-community/cli-platform-android": "^3.0.3",
+    "@react-native-community/cli-platform-ios": "^3.0.0",
+    "chalk": "^3.0.0",
+    "color-string": "^1.5.3",
+    "core-js": "^3.6.4",
+    "expo-module-scripts": "^1.1.1",
+    "fs-extra": "^8.1.0",
+    "inquirer": "^7.0.1"
   },
   "jest": {
     "preset": "expo-module-scripts/ios"
+  },
+  "devDependencies": {
+    "@types/color-string": "^1.5.0",
+    "@types/fs-extra": "^8.0.1",
+    "@types/inquirer": "^6.5.0"
   }
 }
