@@ -30,7 +30,7 @@ import expo.modules.updates.launcher.LauncherWithSelectionPolicy;
 import expo.modules.updates.launcher.SelectionPolicy;
 import expo.modules.updates.launcher.SelectionPolicyNewest;
 import expo.modules.updates.loader.EmbeddedLoader;
-import expo.modules.updates.loader.Manifest;
+import expo.modules.updates.manifest.Manifest;
 import expo.modules.updates.loader.RemoteLoader;
 
 import java.io.File;

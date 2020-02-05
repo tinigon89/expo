@@ -8,6 +8,8 @@ import expo.modules.updates.UpdateUtils;
 import expo.modules.updates.db.UpdatesDatabase;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
+import expo.modules.updates.manifest.Manifest;
+import expo.modules.updates.manifest.ManifestFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -68,7 +70,7 @@ public class EmbeddedLoader {
     if (sEmbeddedManifest == null) {
       try (InputStream stream = context.getAssets().open(MANIFEST_FILENAME)) {
         String manifestString = IOUtils.toString(stream, "UTF-8");
-        sEmbeddedManifest = Manifest.fromManagedManifestJson(new JSONObject(manifestString));
+        sEmbeddedManifest = ManifestFactory.getManifest(context, new JSONObject(manifestString));
       } catch (Exception e) {
         Log.e(TAG, "Could not read embedded manifest", e);
       }

@@ -17,7 +17,7 @@ import expo.modules.updates.db.UpdatesDatabase;
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.launcher.Launcher;
 import expo.modules.updates.loader.FileDownloader;
-import expo.modules.updates.loader.Manifest;
+import expo.modules.updates.manifest.Manifest;
 import expo.modules.updates.loader.RemoteLoader;
 
 public class UpdatesModule extends ExportedModule {

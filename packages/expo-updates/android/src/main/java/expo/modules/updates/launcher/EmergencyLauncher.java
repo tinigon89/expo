@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.loader.EmbeddedLoader;
-import expo.modules.updates.loader.Manifest;
+import expo.modules.updates.manifest.Manifest;
 
 import static expo.modules.updates.loader.EmbeddedLoader.BUNDLE_FILENAME;
 

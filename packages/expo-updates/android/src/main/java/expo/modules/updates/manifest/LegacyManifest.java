@@ -1,4 +1,4 @@
-package expo.modules.updates.loader;
+package expo.modules.updates.manifest;
 
 import android.net.Uri;
 import android.util.Log;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import static expo.modules.updates.loader.EmbeddedLoader.BUNDLE_FILENAME;
 
-public class Manifest {
+public class LegacyManifest implements Manifest {
 
   private static String TAG = Manifest.class.getSimpleName();
 
@@ -39,7 +39,7 @@ public class Manifest {
 
   private JSONObject mManifestJson;
 
-  private Manifest(JSONObject manifestJson, UUID id, Date commitTime, String runtimeVersion, JSONObject metadata, Uri bundleUrl, JSONArray assets) {
+  private LegacyManifest(JSONObject manifestJson, UUID id, Date commitTime, String runtimeVersion, JSONObject metadata, Uri bundleUrl, JSONArray assets) {
     mManifestJson = manifestJson;
     mId = id;
     mCommitTime = commitTime;
@@ -49,18 +49,7 @@ public class Manifest {
     mAssets = assets;
   }
 
-  public static Manifest fromBareManifestJson(JSONObject manifestJson) throws JSONException {
-    UUID id = UUID.fromString(manifestJson.getString("id"));
-    Date commitTime = new Date(manifestJson.getLong("commitTime"));
-    String runtimeVersion = manifestJson.getString("runtimeVersion");
-    JSONObject metadata = manifestJson.optJSONObject("metadata");
-    Uri bundleUrl = Uri.parse(manifestJson.getString("bundleUrl"));
-    JSONArray assets = manifestJson.optJSONArray("assets");
-
-    return new Manifest(manifestJson, id, commitTime, runtimeVersion, metadata, bundleUrl, assets);
-  }
-
-  public static Manifest fromManagedManifestJson(JSONObject manifestJson) throws JSONException {
+  public static LegacyManifest fromLegacyManifestJson(JSONObject manifestJson) throws JSONException {
     UUID id = UUID.fromString(manifestJson.getString("releaseId"));
     String commitTimeString = manifestJson.getString("commitTime");
     String runtimeVersion = manifestJson.getString("sdkVersion");
@@ -81,7 +70,7 @@ public class Manifest {
 
     JSONArray bundledAssets = manifestJson.optJSONArray("bundledAssets");
 
-    return new Manifest(manifestJson, id, commitTime, runtimeVersion, manifestJson, bundleUrl, bundledAssets);
+    return new LegacyManifest(manifestJson, id, commitTime, runtimeVersion, manifestJson, bundleUrl, bundledAssets);
   }
 
   public JSONObject getRawManifestJson() {
@@ -106,47 +95,29 @@ public class Manifest {
     assetList.add(bundleAssetEntity);
 
     if (mAssets != null && mAssets.length() > 0) {
-      if (mAssets.opt(0) instanceof String) {
-        // process this as a managed manifest
-        for (int i = 0; i < mAssets.length(); i++) {
-          try {
-            String bundledAsset = mAssets.getString(i);
-            int extensionIndex = bundledAsset.lastIndexOf('.');
-            int prefixLength = "asset_".length();
-            String hash = extensionIndex > 0
-                ? bundledAsset.substring(prefixLength, extensionIndex)
-                : bundledAsset.substring(prefixLength);
-            String type = extensionIndex > 0 ? bundledAsset.substring(extensionIndex + 1) : "";
+      for (int i = 0; i < mAssets.length(); i++) {
+        try {
+          String bundledAsset = mAssets.getString(i);
+          int extensionIndex = bundledAsset.lastIndexOf('.');
+          int prefixLength = "asset_".length();
+          String hash = extensionIndex > 0
+            ? bundledAsset.substring(prefixLength, extensionIndex)
+            : bundledAsset.substring(prefixLength);
+          String type = extensionIndex > 0 ? bundledAsset.substring(extensionIndex + 1) : "";
 
-            AssetEntity assetEntity = new AssetEntity(Uri.withAppendedPath(getAssetsUrlBase(), hash), type);
-            assetEntity.assetsFilename = bundledAsset;
-            assetList.add(assetEntity);
-          } catch (JSONException e) {
-            Log.e(TAG, "Could not read asset from manifest", e);
-          }
+          AssetEntity assetEntity = new AssetEntity(Uri.withAppendedPath(getAssetsUrlBase(), hash), type);
+          assetEntity.assetsFilename = bundledAsset;
+          assetList.add(assetEntity);
+        } catch (JSONException e) {
+          Log.e(TAG, "Could not read asset from manifest", e);
         }
-      } else {
-        for (int i = 0; i < mAssets.length(); i++) {
-          try {
-            JSONObject assetObject = mAssets.getJSONObject(i);
-            AssetEntity assetEntity = new AssetEntity(
-                Uri.parse(assetObject.getString("url")),
-                assetObject.getString("type")
-            );
-            assetEntity.assetsFilename = assetObject.optString("assetsFilename");
-            assetList.add(assetEntity);
-          } catch (JSONException e) {
-            Log.e(TAG, "Could not read asset from manifest", e);
-          }
-        }
-
       }
     }
 
     return assetList;
   }
 
-  public Uri getAssetsUrlBase() {
+  private Uri getAssetsUrlBase() {
     if (mAssetsUrlBase == null) {
       Uri manifestUrl = UpdatesController.getInstance().getManifestUrl();
       String hostname = manifestUrl.getHost();

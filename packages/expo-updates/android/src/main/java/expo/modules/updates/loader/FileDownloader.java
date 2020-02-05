@@ -23,6 +23,8 @@ import java.util.Date;
 
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.launcher.EmergencyLauncher;
+import expo.modules.updates.manifest.Manifest;
+import expo.modules.updates.manifest.ManifestFactory;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -87,7 +89,7 @@ public class FileDownloader {
     });
   }
 
-  public static void downloadManifest(final Uri url, Context context, final ManifestDownloadCallback callback) {
+  public static void downloadManifest(final Uri url, final Context context, final ManifestDownloadCallback callback) {
     downloadData(addHeadersToManifestUrl(url, context), new Callback() {
       @Override
       public void onFailure(Call call, IOException e) {
@@ -119,7 +121,7 @@ public class FileDownloader {
                   public void onCompleted(boolean isValid) {
                     if (isValid) {
                       try {
-                        Manifest manifest = Manifest.fromManagedManifestJson(new JSONObject(innerManifestString));
+                        Manifest manifest = ManifestFactory.getManifest(context, new JSONObject(innerManifestString));
                         callback.onSuccess(manifest);
                       } catch (JSONException e) {
                         callback.onFailure("Failed to parse manifest data", e);
@@ -131,7 +133,7 @@ public class FileDownloader {
                 }
             );
           } else {
-            Manifest manifest = Manifest.fromManagedManifestJson(manifestJson);
+            Manifest manifest = ManifestFactory.getManifest(context, manifestJson);
             callback.onSuccess(manifest);
           }
         } catch (Exception e) {
