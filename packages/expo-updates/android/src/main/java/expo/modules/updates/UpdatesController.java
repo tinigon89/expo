@@ -34,6 +34,7 @@ import expo.modules.updates.manifest.Manifest;
 import expo.modules.updates.loader.RemoteLoader;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -41,14 +42,14 @@ public class UpdatesController {
 
   private static final String TAG = UpdatesController.class.getSimpleName();
 
-  public static final String UPDATES_EVENT_NAME = "Expo.nativeUpdatesEvent";
-  public static final String UPDATE_AVAILABLE_EVENT = "updateAvailable";
-  public static final String UPDATE_NO_UPDATE_AVAILABLE_EVENT = "noUpdateAvailable";
-  public static final String UPDATE_ERROR_EVENT = "error";
+  private static final String UPDATES_EVENT_NAME = "Expo.nativeUpdatesEvent";
+  private static final String UPDATE_AVAILABLE_EVENT = "updateAvailable";
+  private static final String UPDATE_NO_UPDATE_AVAILABLE_EVENT = "noUpdateAvailable";
+  private static final String UPDATE_ERROR_EVENT = "error";
 
   private static UpdatesController sInstance;
 
-  private ReactNativeHost mReactNativeHost;
+  private WeakReference<ReactNativeHost> mReactNativeHost;
 
   private Uri mManifestUrl;
   private File mUpdatesDirectory;
@@ -68,7 +69,7 @@ public class UpdatesController {
     mDatabaseHolder = new DatabaseHolder(UpdatesDatabase.getInstance(context));
     mSelectionPolicy = new SelectionPolicyNewest(getRuntimeVersion(context));
     if (context instanceof ReactApplication) {
-      mReactNativeHost = ((ReactApplication) context).getReactNativeHost();
+      mReactNativeHost = new WeakReference<>(((ReactApplication) context).getReactNativeHost());
     }
 
     try {
@@ -112,7 +113,7 @@ public class UpdatesController {
    * @param reactNativeHost the ReactNativeHost of the application running the Updates module
    */
   public void setReactNativeHost(ReactNativeHost reactNativeHost) {
-    mReactNativeHost = reactNativeHost;
+    mReactNativeHost = new WeakReference<>(reactNativeHost);
   }
 
   // database
@@ -416,10 +417,11 @@ public class UpdatesController {
   }
 
   public void relaunchReactApplication(Context context, Launcher.LauncherCallback callback) {
-    if (mReactNativeHost == null) {
-      callback.onFailure(new Exception("Could not reload application. Ensure you have passed an instance of ReactApplication into UpdatesController.initialize()."));
+    if (mReactNativeHost == null || mReactNativeHost.get() == null) {
+      callback.onFailure(new Exception("Could not reload application. Ensure you have passed the correct instance of ReactApplication into UpdatesController.initialize()."));
       return;
     }
+    final ReactNativeHost host = mReactNativeHost.get();
 
     final String oldLaunchAssetFile = mLauncher.getLaunchAssetFile();
 
@@ -436,7 +438,7 @@ public class UpdatesController {
         mLauncher = newLauncher;
         releaseDatabase();
 
-        final ReactInstanceManager instanceManager = mReactNativeHost.getReactInstanceManager();
+        final ReactInstanceManager instanceManager = host.getReactInstanceManager();
 
         String newLaunchAssetFile = mLauncher.getLaunchAssetFile();
         if (newLaunchAssetFile != null && !newLaunchAssetFile.equals(oldLaunchAssetFile)) {
@@ -466,8 +468,8 @@ public class UpdatesController {
   }
 
   private void sendEventToReactInstance(final String eventName, final WritableMap params) {
-    if (mReactNativeHost != null) {
-      final ReactInstanceManager instanceManager = mReactNativeHost.getReactInstanceManager();
+    if (mReactNativeHost != null && mReactNativeHost.get() != null) {
+      final ReactInstanceManager instanceManager = mReactNativeHost.get().getReactInstanceManager();
       AsyncTask.execute(() -> {
         try {
           ReactContext reactContext = null;
