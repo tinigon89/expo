@@ -36,7 +36,7 @@ public class Reaper {
 
       File path = new File(updatesDirectory, asset.relativePath);
       try {
-        if (path.delete()) {
+        if (!path.exists() || path.delete()) {
           deletedAssets.add(asset);
         } else {
           Log.e(TAG, "Failed to delete asset with URL " + asset.url + " at path " + path.toString());
@@ -52,7 +52,7 @@ public class Reaper {
     for (AssetEntity asset : erroredAssets) {
       File path = new File(updatesDirectory, asset.relativePath);
       try {
-        if (path.delete()) {
+        if (!path.exists() || path.delete()) {
           deletedAssets.add(asset);
           erroredAssets.remove(asset);
         } else {
