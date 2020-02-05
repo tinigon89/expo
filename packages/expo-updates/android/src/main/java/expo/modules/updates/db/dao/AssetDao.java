@@ -94,8 +94,7 @@ public abstract class AssetDao {
     // the simplest way to mark the assets we want to delete
     // is to mark all assets for deletion, then go back and unmark
     // those assets in updates we want to keep
-    // this is safe as long as we have a lock and nothing else is happening
-    // in the database during the execution of this method
+    // this is safe since this is a transaction and will be rolled back upon failure
     _markAllAssetsForDeletion();
     _unmarkUsedAssetsFromDeletion();
     return _loadAssetsMarkedForDeletion();

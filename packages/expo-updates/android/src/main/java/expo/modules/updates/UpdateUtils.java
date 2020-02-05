@@ -46,7 +46,7 @@ public class UpdateUtils {
       byte[] sha1hash = md.digest();
       return bytesToHex(sha1hash);
     } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-      Log.e(TAG, "Could not encode via SHA-256", e);
+      Log.e(TAG, "Failed to checksum string via SHA-256", e);
       throw e;
     }
   }
@@ -59,7 +59,7 @@ public class UpdateUtils {
       MessageDigest md = digestInputStream.getMessageDigest();
       return md.digest();
     } catch (NoSuchAlgorithmException | IOException e) {
-      Log.e(TAG, "Failed to hash asset " + file.toString(), e);
+      Log.e(TAG, "Failed to checksum file via SHA-256: " + file.toString(), e);
       throw e;
     }
   }
@@ -84,7 +84,7 @@ public class UpdateUtils {
       if (fileWriteSuccess) {
         // if the file was written successfully and we just couldn't hash it, return null
         // and let the caller handle having a null hash
-        Log.e(TAG, "Could not get SHA-256 hash of file", e);
+        Log.e(TAG, "Failed to checksum file via SHA-256: " + destination.toString(), e);
         return null;
       } else {
         // otherwise, the file was not written successfully so we need to throw

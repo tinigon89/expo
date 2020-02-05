@@ -66,7 +66,7 @@ public class Converters {
 
 
   @TypeConverter
-  public static UUID uuidToBytes(byte[] bytes) {
+  public static UUID bytesToUuid(byte[] bytes) {
     ByteBuffer bb = ByteBuffer.wrap(bytes);
     long firstLong = bb.getLong();
     long secondLong = bb.getLong();
@@ -74,7 +74,7 @@ public class Converters {
   }
 
   @TypeConverter
-  public static byte[] bytesToUuid(UUID uuid) {
+  public static byte[] uuidToBytes(UUID uuid) {
     ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
     bb.putLong(uuid.getMostSignificantBits());
     bb.putLong(uuid.getLeastSignificantBits());

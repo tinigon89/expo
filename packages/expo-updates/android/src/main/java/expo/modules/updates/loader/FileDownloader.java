@@ -80,13 +80,13 @@ public class FileDownloader {
     downloadData(addHeadersToManifestUrl(url, context), new Callback() {
       @Override
       public void onFailure(Call call, IOException e) {
-        callback.onFailure("Failed to download manifest from uri: " + url, e);
+        callback.onFailure("Failed to download manifest from URL: " + url, e);
       }
 
       @Override
       public void onResponse(Call call, Response response) throws IOException {
         if (!response.isSuccessful()) {
-          callback.onFailure("Failed to download manifest from uri: " + url, new Exception(response.body().string()));
+          callback.onFailure("Failed to download manifest from URL: " + url, new Exception(response.body().string()));
           return;
         }
 

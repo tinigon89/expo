@@ -39,11 +39,11 @@ public class Reaper {
         if (path.delete()) {
           deletedAssets.add(asset);
         } else {
-          Log.e(TAG, "Failed to delete asset with URL " + asset.url);
+          Log.e(TAG, "Failed to delete asset with URL " + asset.url + " at path " + path.toString());
           erroredAssets.add(asset);
         }
       } catch (Exception e) {
-        Log.e(TAG, "Could not delete asset with URL " + asset.url, e);
+        Log.e(TAG, "Failed to delete asset with URL " + asset.url + " at path " + path.toString(), e);
         erroredAssets.add(asset);
       }
     }
@@ -56,10 +56,10 @@ public class Reaper {
           deletedAssets.add(asset);
           erroredAssets.remove(asset);
         } else {
-          Log.e(TAG, "Retried deleting asset with URL " + asset.url + " and failed again");
+          Log.e(TAG, "Retried and failed again deleting asset with URL " + asset.url + " at path " + path.toString());
         }
       } catch (Exception e) {
-        Log.e(TAG, "Retried deleting asset with URL " + asset.url + " and errored again", e);
+        Log.e(TAG, "Retried and failed again deleting asset with URL " + asset.url + " at path " + path.toString(), e);
         erroredAssets.add(asset);
       }
     }

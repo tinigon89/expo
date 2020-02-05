@@ -361,7 +361,7 @@ public class UpdatesController {
     } else if (sdkVersion != null && sdkVersion.length() > 0) {
       return sdkVersion;
     } else {
-      throw new AssertionError("One of expo_runtime_version or expo_sdk_version must be defined");
+      throw new AssertionError("One of expo_runtime_version or expo_sdk_version must be defined in the Android app manifest");
     }
   }
 
@@ -375,7 +375,7 @@ public class UpdatesController {
       ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
       developerSetting = ai.metaData.getString("expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH", "ALWAYS");
     } catch (Exception e) {
-      Log.e(TAG, "Failed to read value expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH in AndroidManifest; defaulting to ALWAYS", e);
+      Log.e(TAG, "Failed to read value of expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH in AndroidManifest; defaulting to ALWAYS", e);
     }
 
     if ("ALWAYS".equals(developerSetting)) {
@@ -390,7 +390,7 @@ public class UpdatesController {
       }
       return !cm.isActiveNetworkMetered();
     } else {
-      Log.e(TAG, "Invalid value for expo_updates_check_on_launch; defaulting to ALWAYS");
+      Log.e(TAG, "Invalid value " + developerSetting + " for expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH in AndroidManifest; defaulting to ALWAYS");
       return true;
     }
   }

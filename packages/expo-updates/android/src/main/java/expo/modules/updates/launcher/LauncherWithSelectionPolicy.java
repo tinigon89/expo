@@ -136,6 +136,7 @@ public class LauncherWithSelectionPolicy implements Launcher {
             }
           } catch (Exception e) {
             // things are really not going our way...
+            Log.e(TAG, "Failed to copy matching embedded asset", e);
           }
         }
       }

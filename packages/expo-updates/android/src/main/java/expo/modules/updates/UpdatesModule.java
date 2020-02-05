@@ -65,7 +65,7 @@ public class UpdatesModule extends ExportedModule {
     if (controller == null) {
       promise.reject(
           "ERR_UPDATES_RELOAD",
-          "The updates module controller has not been properly initialized. If you're in development mode, you cannot use `Updates.reloadAsync`. Otherwise, make sure you have called UpdatesController.initialize()."
+          "The updates module controller has not been properly initialized. If you're using a development client, you cannot use `Updates.reloadAsync`. Otherwise, make sure you have called the native method UpdatesController.initialize()."
       );
       return;
     }
@@ -91,7 +91,7 @@ public class UpdatesModule extends ExportedModule {
     if (controller == null) {
       promise.reject(
           "ERR_UPDATES_CHECK",
-          "The updates module controller has not been properly initialized. If you're in development mode, you cannot check for updates. Otherwise, make sure you have called UpdatesController.initialize()."
+          "The updates module controller has not been properly initialized. If you're using a development client, you cannot check for updates. Otherwise, make sure you have called the native method UpdatesController.initialize()."
       );
       return;
     }
@@ -129,7 +129,7 @@ public class UpdatesModule extends ExportedModule {
     if (controller == null) {
       promise.reject(
           "ERR_UPDATES_FETCH",
-          "The updates module controller has not been properly initialized. If you're in development mode, you cannot fetch updates. Otherwise, make sure you have called UpdatesController.initialize()."
+          "The updates module controller has not been properly initialized. If you're using a development client, you cannot fetch updates. Otherwise, make sure you have called the native method UpdatesController.initialize()."
       );
       return;
     }
