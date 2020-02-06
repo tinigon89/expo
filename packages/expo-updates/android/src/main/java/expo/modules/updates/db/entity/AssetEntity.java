@@ -52,7 +52,7 @@ public class AssetEntity {
   public boolean isLaunchAsset = false;
 
   @Ignore
-  public String assetsFilename = null;
+  public String embeddedAssetFilename = null;
 
   public AssetEntity(Uri url, String type) {
     this.url = url;

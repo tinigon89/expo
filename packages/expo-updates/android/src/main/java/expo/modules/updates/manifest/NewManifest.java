@@ -68,7 +68,7 @@ public class NewManifest implements Manifest {
 
     AssetEntity bundleAssetEntity = new AssetEntity(mBundleUrl, "js");
     bundleAssetEntity.isLaunchAsset = true;
-    bundleAssetEntity.assetsFilename = BUNDLE_FILENAME;
+    bundleAssetEntity.embeddedAssetFilename = BUNDLE_FILENAME;
     assetList.add(bundleAssetEntity);
 
     if (mAssets != null && mAssets.length() > 0) {
@@ -79,7 +79,7 @@ public class NewManifest implements Manifest {
             Uri.parse(assetObject.getString("url")),
             assetObject.getString("type")
           );
-          assetEntity.assetsFilename = assetObject.optString("assetsFilename");
+          assetEntity.embeddedAssetFilename = assetObject.optString("embeddedAssetFilename");
           assetList.add(assetEntity);
         } catch (JSONException e) {
           Log.e(TAG, "Could not read asset from manifest", e);

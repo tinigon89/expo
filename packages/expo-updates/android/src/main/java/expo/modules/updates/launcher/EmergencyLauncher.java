@@ -34,7 +34,7 @@ public class EmergencyLauncher implements Launcher {
       if (remoteFilename != null) {
         mLocalAssetFiles.put(
           remoteFilename,
-          "asset:///" + asset.assetsFilename
+          "asset:///" + asset.embeddedAssetFilename
         );
       }
     }

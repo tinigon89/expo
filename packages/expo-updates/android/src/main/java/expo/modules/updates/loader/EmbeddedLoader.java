@@ -12,7 +12,6 @@ import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.manifest.Manifest;
 import expo.modules.updates.manifest.ManifestFactory;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
@@ -20,8 +19,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,11 +79,11 @@ public class EmbeddedLoader {
 
   public static @Nullable byte[] copyAssetAndGetHash(AssetEntity asset, File destination, Context context) throws NoSuchAlgorithmException, IOException {
     try (
-        InputStream inputStream = context.getAssets().open(asset.assetsFilename)
+        InputStream inputStream = context.getAssets().open(asset.embeddedAssetFilename)
     ) {
       return UpdateUtils.sha256AndWriteToFile(inputStream, destination);
     } catch (Exception e) {
-      Log.e(TAG, "Failed to copy asset " + asset.assetsFilename, e);
+      Log.e(TAG, "Failed to copy asset " + asset.embeddedAssetFilename, e);
       throw e;
     }
   }
@@ -130,7 +127,7 @@ public class EmbeddedLoader {
           asset.relativePath = filename;
           mFinishedAssetList.add(asset);
         } catch (FileNotFoundException e) {
-          throw new AssertionError("APK bundle must contain the expected embedded asset " + asset.assetsFilename);
+          throw new AssertionError("APK bundle must contain the expected embedded asset " + asset.embeddedAssetFilename);
         } catch (Exception e) {
           mErroredAssetList.add(asset);
         }

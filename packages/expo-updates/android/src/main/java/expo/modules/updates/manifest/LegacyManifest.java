@@ -91,7 +91,7 @@ public class LegacyManifest implements Manifest {
 
     AssetEntity bundleAssetEntity = new AssetEntity(mBundleUrl, "js");
     bundleAssetEntity.isLaunchAsset = true;
-    bundleAssetEntity.assetsFilename = BUNDLE_FILENAME;
+    bundleAssetEntity.embeddedAssetFilename = BUNDLE_FILENAME;
     assetList.add(bundleAssetEntity);
 
     if (mAssets != null && mAssets.length() > 0) {
@@ -106,7 +106,7 @@ public class LegacyManifest implements Manifest {
           String type = extensionIndex > 0 ? bundledAsset.substring(extensionIndex + 1) : "";
 
           AssetEntity assetEntity = new AssetEntity(Uri.withAppendedPath(getAssetsUrlBase(), hash), type);
-          assetEntity.assetsFilename = bundledAsset;
+          assetEntity.embeddedAssetFilename = bundledAsset;
           assetList.add(assetEntity);
         } catch (JSONException e) {
           Log.e(TAG, "Could not read asset from manifest", e);
