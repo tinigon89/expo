@@ -97,10 +97,10 @@ public class UpdatesController {
       Uri url = null;
       try {
         ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-        String urlString = ai.metaData.getString("expo.modules.updates.EXPO_APP_URL");
+        String urlString = ai.metaData.getString("expo.modules.updates.EXPO_UPDATE_URL");
         url = urlString == null ? null : Uri.parse(urlString);
       } catch (Exception e) {
-        Log.e(TAG, "Could not read value expo.modules.updates.EXPO_APP_URL in AndroidManifest", e);
+        Log.e(TAG, "Could not read value expo.modules.updates.EXPO_UPDATE_URL in AndroidManifest", e);
       }
       new UpdatesController(context, url);
     }
