@@ -28,8 +28,7 @@ public abstract class UpdateDao {
   @Query("SELECT * FROM updates WHERE id = :id;")
   public abstract List<UpdateEntity> _loadUpdatesWithId(UUID id);
 
-  @Query("SELECT * FROM updates INNER JOIN assets ON updates.launch_asset_id = assets.id WHERE updates.id = :id;")
-  @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+  @Query("SELECT assets.* FROM assets INNER JOIN updates ON updates.launch_asset_id = assets.id WHERE updates.id = :id;")
   public abstract AssetEntity _loadLaunchAsset(UUID id);
 
   @Query("UPDATE updates SET keep = 1 WHERE id = :id;")
