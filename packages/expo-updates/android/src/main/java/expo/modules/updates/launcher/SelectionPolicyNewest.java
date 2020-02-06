@@ -39,14 +39,18 @@ public class SelectionPolicyNewest implements SelectionPolicy {
 
   @Override
   public List<UpdateEntity> markUpdatesForDeletion(List<UpdateEntity> updates, UpdateEntity launchedUpdate) {
+    if (launchedUpdate == null) {
+      return new ArrayList<>();
+    }
+
     List<UpdateEntity> updatesToMark = new ArrayList<>();
     for (UpdateEntity update : updates) {
-      if (launchedUpdate != null && update.commitTime.before(launchedUpdate.commitTime)) {
+      if (update.commitTime.before(launchedUpdate.commitTime)) {
         update.status = UpdateStatus.UNUSED;
         update.keep = false;
         updatesToMark.add(update);
       }
-      if (launchedUpdate != null && update.id.equals(launchedUpdate.id)) {
+      if (update.id.equals(launchedUpdate.id)) {
         update.keep = true;
         updatesToMark.add(update);
       }
