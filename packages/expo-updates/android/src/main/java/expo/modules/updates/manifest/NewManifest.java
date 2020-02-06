@@ -3,6 +3,7 @@ package expo.modules.updates.manifest;
 import android.net.Uri;
 import android.util.Log;
 
+import expo.modules.updates.UpdatesController;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 
@@ -55,7 +56,8 @@ public class NewManifest implements Manifest {
   }
 
   public UpdateEntity getUpdateEntity() {
-    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion);
+    String projectIdentifier = UpdatesController.getInstance().getManifestUrl().toString();
+    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion, projectIdentifier);
     if (mMetadata != null) {
       updateEntity.metadata = mMetadata;
     }

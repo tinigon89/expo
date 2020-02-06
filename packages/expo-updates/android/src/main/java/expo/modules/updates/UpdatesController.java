@@ -102,6 +102,9 @@ public class UpdatesController {
       } catch (Exception e) {
         Log.e(TAG, "Could not read value expo.modules.updates.EXPO_UPDATE_URL in AndroidManifest", e);
       }
+      if (url == null) {
+        throw new AssertionError("UpdatesController cannot be initialized without a valid value for expo.modules.updates.EXPO_UPDATE_URL in AndroidManifest");
+      }
       new UpdatesController(context, url);
     }
   }

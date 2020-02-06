@@ -22,12 +22,16 @@ import static androidx.room.ForeignKey.CASCADE;
                                   childColumns = "launch_asset_id",
                                   onDelete = CASCADE),
         indices = {@Index(value = "launch_asset_id"),
-                   @Index(value = "commit_time", unique = true)})
+                   @Index(value = {"project_identifier", "commit_time"}, unique = true)})
 public class UpdateEntity {
   @PrimaryKey
   @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
   @NonNull
   public UUID id;
+
+  @ColumnInfo(name = "project_identifier")
+  @NonNull
+  public String projectIdentifier;
 
   @ColumnInfo(name = "commit_time")
   @NonNull
@@ -48,9 +52,10 @@ public class UpdateEntity {
   @NonNull
   public boolean keep = false;
 
-  public UpdateEntity(UUID id, Date commitTime, String runtimeVersion) {
+  public UpdateEntity(UUID id, Date commitTime, String runtimeVersion, String projectIdentifier) {
     this.id = id;
     this.commitTime = commitTime;
     this.runtimeVersion = runtimeVersion;
+    this.projectIdentifier = projectIdentifier;
   }
 }

@@ -78,7 +78,8 @@ public class LegacyManifest implements Manifest {
   }
 
   public UpdateEntity getUpdateEntity() {
-    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion);
+    String projectIdentifier = UpdatesController.getInstance().getManifestUrl().toString();
+    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion, projectIdentifier);
     if (mMetadata != null) {
       updateEntity.metadata = mMetadata;
     }
