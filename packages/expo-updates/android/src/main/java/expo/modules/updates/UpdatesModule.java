@@ -2,6 +2,7 @@ package expo.modules.updates;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -99,17 +100,23 @@ public class UpdatesModule extends ExportedModule {
         @Override
         public void onSuccess(Manifest manifest) {
           UpdateEntity launchedUpdate = controller.getLaunchedUpdate();
+          Bundle updateInfo = new Bundle();
           if (launchedUpdate == null) {
             // this shouldn't ever happen, but if we don't have anything to compare
             // the new manifest to, let the user know an update is available
-            promise.resolve(manifest.getRawManifestJson().toString());
+            updateInfo.putBoolean("isAvailable", true);
+            updateInfo.putString("manifestString", manifest.getRawManifestJson().toString());
+            promise.resolve(updateInfo);
             return;
           }
 
           if (controller.getSelectionPolicy().shouldLoadNewUpdate(manifest.getUpdateEntity(), launchedUpdate)) {
-            promise.resolve(manifest.getRawManifestJson().toString());
+            updateInfo.putBoolean("isAvailable", true);
+            updateInfo.putString("manifestString", manifest.getRawManifestJson().toString());
+            promise.resolve(updateInfo);
           } else {
-            promise.resolve(false);
+            updateInfo.putBoolean("isAvailable", false);
+            promise.resolve(updateInfo);
           }
         }
       });
@@ -152,7 +159,14 @@ public class UpdatesModule extends ExportedModule {
               @Override
               public void onSuccess(@Nullable UpdateEntity update) {
                 controller.releaseDatabase();
-                promise.resolve(update == null ? false : update.metadata.toString());
+                Bundle updateInfo = new Bundle();
+                if (update == null) {
+                  updateInfo.putBoolean("isNew", false);
+                } else {
+                  updateInfo.putBoolean("isNew", true);
+                  updateInfo.putString("manifestString", update.metadata.toString());
+                }
+                promise.resolve(updateInfo);
               }
             }
           );
