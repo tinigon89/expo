@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.Nullable;
+import expo.modules.updates.UpdateUtils;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.loader.EmbeddedLoader;
@@ -30,7 +31,7 @@ public class EmergencyLauncher implements Launcher {
     Manifest embeddedManifest = EmbeddedLoader.readEmbeddedManifest(context);
     mLocalAssetFiles = new HashMap<>();
     for (AssetEntity asset : embeddedManifest.getAssetEntityList()) {
-      String remoteFilename = asset.url.getLastPathSegment();
+      String remoteFilename = UpdateUtils.getLocalAssetsKey(asset);
       if (remoteFilename != null) {
         mLocalAssetFiles.put(
           remoteFilename,

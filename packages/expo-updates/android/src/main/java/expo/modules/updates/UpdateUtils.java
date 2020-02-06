@@ -104,6 +104,15 @@ public class UpdateUtils {
     return base + "." + asset.type;
   }
 
+  public static @Nullable String getLocalAssetsKey(AssetEntity asset) {
+    String remoteFilename = asset.url.getLastPathSegment();
+    if (remoteFilename == null) {
+      return null;
+    } else {
+      return remoteFilename + "." + asset.type;
+    }
+  }
+
   // https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
   private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
   public static String bytesToHex(byte[] bytes) {

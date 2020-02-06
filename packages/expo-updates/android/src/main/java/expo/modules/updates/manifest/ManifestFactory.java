@@ -18,7 +18,7 @@ public class ManifestFactory {
       ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
       isLegacy = ai.metaData.getBoolean("expo.modules.updates.EXPO_LEGACY_MANIFEST", true);
     } catch (Exception e) {
-      Log.e(TAG, "Failed to read meta-data from AndroidManifest", e);
+      Log.e(TAG, "Failed to read expo.modules.updates.EXPO_LEGACY_MANIFEST meta-data from AndroidManifest", e);
     }
     if (isLegacy) {
       return LegacyManifest.fromLegacyManifestJson(manifestJson);

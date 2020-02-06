@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.Nullable;
+import expo.modules.updates.UpdateUtils;
 import expo.modules.updates.db.UpdatesDatabase;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
@@ -87,7 +88,7 @@ public class LauncherWithSelectionPolicy implements Launcher {
       String filename = asset.relativePath;
       if (filename != null) {
         File assetFile = ensureAssetExists(asset, database, context);
-        String remoteFilename = asset.url.getLastPathSegment();
+        String remoteFilename = UpdateUtils.getLocalAssetsKey(asset);
         if (assetFile != null && remoteFilename != null) {
           mLocalAssetFiles.put(
               remoteFilename,
@@ -178,7 +179,7 @@ public class LauncherWithSelectionPolicy implements Launcher {
         mLaunchAssetFile = assetFile.toString();
       }
     } else {
-      String remoteFilename = asset.url.getLastPathSegment();
+      String remoteFilename = UpdateUtils.getLocalAssetsKey(asset);
       if (assetFile != null && remoteFilename != null) {
         mLocalAssetFiles.put(
             remoteFilename,
