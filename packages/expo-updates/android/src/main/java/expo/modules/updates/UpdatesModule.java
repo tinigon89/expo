@@ -15,6 +15,7 @@ import org.unimodules.core.interfaces.ExpoMethod;
 
 import androidx.annotation.Nullable;
 import expo.modules.updates.db.UpdatesDatabase;
+import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.launcher.Launcher;
 import expo.modules.updates.loader.FileDownloader;
@@ -49,11 +50,22 @@ public class UpdatesModule extends ExportedModule {
       UpdatesController controller = UpdatesController.getInstance();
       if (controller != null) {
         constants.put("isEmergencyLaunch", controller.isEmergencyLaunch());
-        constants.put("localAssets", controller.getLocalAssetFiles());
 
         UpdateEntity launchedUpdate = controller.getLaunchedUpdate();
         if (launchedUpdate != null) {
           constants.put("manifestString", launchedUpdate.metadata.toString());
+        }
+
+        Map<AssetEntity, String> localAssetFiles = controller.getLocalAssetFiles();
+        if (localAssetFiles != null) {
+          Map<String, String> localAssets = new HashMap<>();
+          for (AssetEntity asset : localAssetFiles.keySet()) {
+            String localAssetsKey = UpdateUtils.getLocalAssetsKey(asset);
+            if (localAssetsKey != null) {
+              localAssets.put(localAssetsKey, localAssetFiles.get(asset));
+            }
+          }
+          constants.put("localAssets", localAssets);
         }
       }
     } catch (IllegalStateException e) {

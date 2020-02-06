@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.Nullable;
-import expo.modules.updates.UpdateUtils;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.loader.EmbeddedLoader;
@@ -25,19 +24,16 @@ public class EmergencyLauncher implements Launcher {
 
   private static final String ERROR_LOG_FILENAME = "expo-error.log";
 
-  private Map<String, String> mLocalAssetFiles;
+  private Map<AssetEntity, String> mLocalAssetFiles;
 
   public EmergencyLauncher(final Context context, final Exception fatalException) {
     Manifest embeddedManifest = EmbeddedLoader.readEmbeddedManifest(context);
     mLocalAssetFiles = new HashMap<>();
     for (AssetEntity asset : embeddedManifest.getAssetEntityList()) {
-      String remoteFilename = UpdateUtils.getLocalAssetsKey(asset);
-      if (remoteFilename != null) {
-        mLocalAssetFiles.put(
-          remoteFilename,
-          "asset:///" + asset.embeddedAssetFilename
-        );
-      }
+      mLocalAssetFiles.put(
+        asset,
+        "asset:///" + asset.embeddedAssetFilename
+      );
     }
 
     AsyncTask.execute(() -> {
@@ -57,7 +53,7 @@ public class EmergencyLauncher implements Launcher {
     return BUNDLE_FILENAME;
   }
 
-  public @Nullable Map<String, String> getLocalAssetFiles() {
+  public @Nullable Map<AssetEntity, String> getLocalAssetFiles() {
     return mLocalAssetFiles;
   }
 

@@ -23,6 +23,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import androidx.annotation.Nullable;
 import expo.modules.updates.db.Reaper;
 import expo.modules.updates.db.UpdatesDatabase;
+import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 import expo.modules.updates.launcher.EmergencyLauncher;
 import expo.modules.updates.launcher.Launcher;
@@ -201,7 +202,7 @@ public class UpdatesController {
    * can be used by `expo-asset` or a similar module to override React Native's asset resolution and
    * use the locally downloaded assets.
    */
-  public @Nullable Map<String, String> getLocalAssetFiles() {
+  public @Nullable Map<AssetEntity, String> getLocalAssetFiles() {
     if (mLauncher == null) {
       return null;
     }
