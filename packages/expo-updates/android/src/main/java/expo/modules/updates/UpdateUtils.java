@@ -64,8 +64,7 @@ public class UpdateUtils {
     }
   }
 
-  public static @Nullable byte[] sha256AndWriteToFile(InputStream inputStream, File destination) throws NoSuchAlgorithmException, IOException {
-    boolean fileWriteSuccess = false;
+  public static byte[] sha256AndWriteToFile(InputStream inputStream, File destination) throws NoSuchAlgorithmException, IOException {
     try (
       DigestInputStream digestInputStream = new DigestInputStream(inputStream, MessageDigest.getInstance("SHA-256"))
     ) {
@@ -73,23 +72,12 @@ public class UpdateUtils {
       // this protects us against partially written files if the process is interrupted
       File tmpFile = new File(destination.getAbsolutePath() + ".tmp");
       FileUtils.copyInputStreamToFile(digestInputStream, tmpFile);
-      fileWriteSuccess = tmpFile.renameTo(destination);
-      if (!fileWriteSuccess) {
+      if (!tmpFile.renameTo(destination)) {
         throw new IOException("File download was successful, but failed to move from temporary to permanent location " + destination.getAbsolutePath());
       }
 
       MessageDigest md = digestInputStream.getMessageDigest();
       return md.digest();
-    } catch (NoSuchAlgorithmException | IOException | NullPointerException e) {
-      if (fileWriteSuccess) {
-        // if the file was written successfully and we just couldn't hash it, return null
-        // and let the caller handle having a null hash
-        Log.e(TAG, "Failed to checksum file via SHA-256: " + destination.toString(), e);
-        return null;
-      } else {
-        // otherwise, the file was not written successfully so we need to throw
-        throw e;
-      }
     }
   }
 

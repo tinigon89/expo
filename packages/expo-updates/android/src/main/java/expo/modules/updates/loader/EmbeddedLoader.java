@@ -77,7 +77,7 @@ public class EmbeddedLoader {
     return sEmbeddedManifest;
   }
 
-  public static @Nullable byte[] copyAssetAndGetHash(AssetEntity asset, File destination, Context context) throws NoSuchAlgorithmException, IOException {
+  public static byte[] copyAssetAndGetHash(AssetEntity asset, File destination, Context context) throws NoSuchAlgorithmException, IOException {
     try (
         InputStream inputStream = context.getAssets().open(asset.embeddedAssetFilename)
     ) {
