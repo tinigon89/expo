@@ -253,9 +253,7 @@ public class UpdatesController {
 
     int delay = getUpdatesConfiguration().getLaunchWaitMs();
     if (delay > 0) {
-      HandlerThread handlerThread = new HandlerThread("expo-updates-timer");
-      handlerThread.start();
-      new Handler(handlerThread.getLooper()).postDelayed(this::finishTimeout, delay);
+      new Handler().postDelayed(this::finishTimeout, delay);
     } else {
       mTimeoutFinished = true;
     }
