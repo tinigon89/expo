@@ -248,7 +248,6 @@ public class UpdatesController {
       mLauncher = new EmergencyLauncher(context, mUpdatesDirectoryException);
       mIsReadyToLaunch = true;
       mTimeoutFinished = true;
-      UpdatesController.this.notify();
       return;
     }
 
