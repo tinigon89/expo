@@ -78,7 +78,7 @@ public class LegacyManifest implements Manifest {
   }
 
   public UpdateEntity getUpdateEntity() {
-    String projectIdentifier = UpdatesController.getInstance().getManifestUrl().toString();
+    String projectIdentifier = UpdatesController.getInstance().getUpdateUrl().toString();
     UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion, projectIdentifier);
     if (mMetadata != null) {
       updateEntity.metadata = mMetadata;
@@ -120,7 +120,7 @@ public class LegacyManifest implements Manifest {
 
   private Uri getAssetsUrlBase() {
     if (mAssetsUrlBase == null) {
-      Uri manifestUrl = UpdatesController.getInstance().getManifestUrl();
+      Uri manifestUrl = UpdatesController.getInstance().getUpdateUrl();
       String hostname = manifestUrl.getHost();
       if (hostname == null) {
         mAssetsUrlBase = Uri.parse(EXPO_ASSETS_URL_BASE);

@@ -1,8 +1,6 @@
 package expo.modules.updates;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -52,7 +50,7 @@ public class UpdatesController {
 
   private WeakReference<ReactNativeHost> mReactNativeHost;
 
-  private Uri mManifestUrl;
+  private UpdatesConfiguration mUpdatesConfiguration;
   private File mUpdatesDirectory;
   private Exception mUpdatesDirectoryException;
   private Launcher mLauncher;
@@ -64,11 +62,10 @@ public class UpdatesController {
   private boolean mTimeoutFinished = false;
   private boolean mHasLaunched = false;
 
-  private UpdatesController(Context context, Uri url) {
-    sInstance = this;
-    mManifestUrl = url;
+  private UpdatesController(Context context, UpdatesConfiguration updatesConfiguration) {
+    mUpdatesConfiguration = updatesConfiguration;
     mDatabaseHolder = new DatabaseHolder(UpdatesDatabase.getInstance(context));
-    mSelectionPolicy = new SelectionPolicyNewest(getRuntimeVersion(context));
+    mSelectionPolicy = new SelectionPolicyNewest(getRuntimeVersion());
     if (context instanceof ReactApplication) {
       mReactNativeHost = new WeakReference<>(((ReactApplication) context).getReactNativeHost());
     }
@@ -95,18 +92,23 @@ public class UpdatesController {
    */
   public static void initialize(Context context) {
     if (sInstance == null) {
-      Uri url = null;
-      try {
-        ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-        String urlString = ai.metaData.getString("expo.modules.updates.EXPO_UPDATE_URL");
-        url = urlString == null ? null : Uri.parse(urlString);
-      } catch (Exception e) {
-        Log.e(TAG, "Could not read value expo.modules.updates.EXPO_UPDATE_URL in AndroidManifest", e);
-      }
-      if (url == null) {
-        throw new AssertionError("UpdatesController cannot be initialized without a valid value for expo.modules.updates.EXPO_UPDATE_URL in AndroidManifest");
-      }
-      new UpdatesController(context, url);
+      UpdatesConfiguration updatesConfiguration = new UpdatesConfiguration().loadValuesFromMetadata(context);
+      sInstance = new UpdatesController(context, updatesConfiguration);
+    }
+  }
+
+  /**
+   * Initializes the UpdatesController singleton. This should be called as early as possible in the
+   * application's lifecycle. Use this method to set or override configuration values at runtime
+   * rather than from AndroidManifest.xml.
+   * @param context the base context of the application, ideally a {@link ReactApplication}
+   */
+  public static void initialize(Context context, Map<String, Object> configuration) {
+    if (sInstance == null) {
+      UpdatesConfiguration updatesConfiguration = new UpdatesConfiguration()
+        .loadValuesFromMetadata(context)
+        .loadValuesFromMap(configuration);
+      sInstance = new UpdatesController(context, updatesConfiguration);
     }
   }
 
@@ -211,8 +213,12 @@ public class UpdatesController {
 
   // other getters
 
-  public Uri getManifestUrl() {
-    return mManifestUrl;
+  public Uri getUpdateUrl() {
+    return mUpdatesConfiguration.getUpdateUrl();
+  }
+
+  public UpdatesConfiguration getUpdatesConfiguration() {
+    return mUpdatesConfiguration;
   }
 
   public File getUpdatesDirectory() {
@@ -246,14 +252,7 @@ public class UpdatesController {
       return;
     }
 
-    int delay = 0;
-    try {
-      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-      delay = ai.metaData.getInt("expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS", 0);
-    } catch (Exception e) {
-      Log.e(TAG, "Could not parse expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS from AndroidManifest; defaulting to 0", e);
-    }
-
+    int delay = getUpdatesConfiguration().getLaunchWaitMs();
     if (delay > 0) {
       HandlerThread handlerThread = new HandlerThread("expo-updates-timer");
       handlerThread.start();
@@ -289,7 +288,7 @@ public class UpdatesController {
       AsyncTask.execute(() -> {
         UpdatesDatabase db = getDatabase();
         new RemoteLoader(context, db, mUpdatesDirectory)
-            .start(mManifestUrl, new RemoteLoader.LoaderCallback() {
+            .start(getUpdateUrl(), new RemoteLoader.LoaderCallback() {
               @Override
               public void onFailure(Exception e) {
                 Log.e(TAG, "Failed to download remote update", e);
@@ -354,16 +353,9 @@ public class UpdatesController {
     }
   }
 
-  private String getRuntimeVersion(Context context) {
-    String runtimeVersion = null;
-    String sdkVersion = null;
-    try {
-      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-      runtimeVersion = ai.metaData.getString("expo.modules.updates.EXPO_RUNTIME_VERSION");
-      sdkVersion = ai.metaData.getString("expo.modules.updates.EXPO_SDK_VERSION");
-    } catch (Exception e) {
-      Log.e(TAG, "Failed to read meta-data from AndroidManifest", e);
-    }
+  private String getRuntimeVersion() {
+    String runtimeVersion = getUpdatesConfiguration().getRuntimeVersion();
+    String sdkVersion = getUpdatesConfiguration().getSdkVersion();
     if (runtimeVersion != null && runtimeVersion.length() > 0) {
       return runtimeVersion;
     } else if (sdkVersion != null && sdkVersion.length() > 0) {
@@ -374,32 +366,25 @@ public class UpdatesController {
   }
 
   private boolean shouldCheckForUpdateOnLaunch(Context context) {
-    if (mManifestUrl == null) {
+    if (getUpdateUrl() == null) {
       return false;
     }
 
-    String developerSetting = "ALWAYS";
-    try {
-      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-      developerSetting = ai.metaData.getString("expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH", "ALWAYS");
-    } catch (Exception e) {
-      Log.e(TAG, "Failed to read value of expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH in AndroidManifest; defaulting to ALWAYS", e);
-    }
+    UpdatesConfiguration.CheckAutomaticallyConfiguration configuration = getUpdatesConfiguration().getCheckOnLaunch();
 
-    if ("ALWAYS".equals(developerSetting)) {
-      return true;
-    } else if ("NEVER".equals(developerSetting)) {
-      return false;
-    } else if ("WIFI_ONLY".equals(developerSetting)) {
-      ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-      if (cm == null) {
-        Log.e(TAG, "Could not determine active network connection is metered; not checking for updates");
+    switch (configuration) {
+      case NEVER:
         return false;
-      }
-      return !cm.isActiveNetworkMetered();
-    } else {
-      Log.e(TAG, "Invalid value " + developerSetting + " for expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH in AndroidManifest; defaulting to ALWAYS");
-      return true;
+      case WIFI_ONLY:
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+          Log.e(TAG, "Could not determine active network connection is metered; not checking for updates");
+          return false;
+        }
+        return !cm.isActiveNetworkMetered();
+      case ALWAYS:
+      default:
+        return true;
     }
   }
 

@@ -102,7 +102,7 @@ public class UpdatesModule extends ExportedModule {
   public void checkForUpdateAsync(final Promise promise) {
     try {
       final UpdatesController controller = UpdatesController.getInstance();
-      FileDownloader.downloadManifest(controller.getManifestUrl(), getContext(), new FileDownloader.ManifestDownloadCallback() {
+      FileDownloader.downloadManifest(controller.getUpdateUrl(), getContext(), new FileDownloader.ManifestDownloadCallback() {
         @Override
         public void onFailure(String message, Exception e) {
           promise.reject("ERR_UPDATES_CHECK", message, e);
@@ -149,7 +149,7 @@ public class UpdatesModule extends ExportedModule {
         UpdatesDatabase database = controller.getDatabase();
         new RemoteLoader(getContext(), database, controller.getUpdatesDirectory())
           .start(
-            controller.getManifestUrl(),
+            controller.getUpdateUrl(),
             new RemoteLoader.LoaderCallback() {
               @Override
               public void onFailure(Exception e) {

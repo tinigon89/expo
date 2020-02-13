@@ -1,8 +1,6 @@
 package expo.modules.updates.loader;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 
@@ -17,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import expo.modules.updates.UpdatesController;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.launcher.EmergencyLauncher;
 import expo.modules.updates.manifest.Manifest;
@@ -197,22 +196,15 @@ public class FileDownloader {
             .header("Expo-Accept-Signature", "true")
             .cacheControl(CacheControl.FORCE_NETWORK);
 
-    String runtimeVersion = null;
-    String sdkVersion = null;
-    String releaseChannel = "default";
-    try {
-      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-      runtimeVersion = ai.metaData.getString("expo.modules.updates.EXPO_RUNTIME_VERSION");
-      sdkVersion = ai.metaData.getString("expo.modules.updates.EXPO_SDK_VERSION");
-      releaseChannel = ai.metaData.getString("expo.modules.updates.EXPO_RELEASE_CHANNEL", "default");
-    } catch (Exception e) {
-      Log.e(TAG, "Failed to read meta-data from AndroidManifest", e);
-    }
+    String runtimeVersion = UpdatesController.getInstance().getUpdatesConfiguration().getRuntimeVersion();
+    String sdkVersion = UpdatesController.getInstance().getUpdatesConfiguration().getSdkVersion();
     if (runtimeVersion != null && runtimeVersion.length() > 0) {
       requestBuilder = requestBuilder.header("Expo-Runtime-Version", runtimeVersion);
     } else {
       requestBuilder = requestBuilder.header("Expo-SDK-Version", sdkVersion);
     }
+
+    String releaseChannel = UpdatesController.getInstance().getUpdatesConfiguration().getReleaseChannel();
     requestBuilder = requestBuilder.header("Expo-Release-Channel", releaseChannel);
 
     String previousFatalError = EmergencyLauncher.consumeErrorLog(context);

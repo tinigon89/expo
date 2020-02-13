@@ -56,7 +56,7 @@ public class NewManifest implements Manifest {
   }
 
   public UpdateEntity getUpdateEntity() {
-    String projectIdentifier = UpdatesController.getInstance().getManifestUrl().toString();
+    String projectIdentifier = UpdatesController.getInstance().getUpdateUrl().toString();
     UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion, projectIdentifier);
     if (mMetadata != null) {
       updateEntity.metadata = mMetadata;
