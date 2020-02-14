@@ -94,6 +94,7 @@ public class UpdatesController {
     if (sInstance == null) {
       UpdatesConfiguration updatesConfiguration = new UpdatesConfiguration().loadValuesFromMetadata(context);
       sInstance = new UpdatesController(context, updatesConfiguration);
+      sInstance.start(context);
     }
   }
 
@@ -109,6 +110,7 @@ public class UpdatesController {
         .loadValuesFromMetadata(context)
         .loadValuesFromMap(configuration);
       sInstance = new UpdatesController(context, updatesConfiguration);
+      sInstance.start(context);
     }
   }
 
