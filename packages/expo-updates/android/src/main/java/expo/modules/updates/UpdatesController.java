@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 
@@ -267,19 +266,23 @@ public class UpdatesController {
       new EmbeddedLoader(context, database, mUpdatesDirectory).loadEmbeddedUpdate();
     }
     launcher.launch(database, context, new Launcher.LauncherCallback() {
-      @Override
-      public void onFailure(Exception e) {
-        mLauncher = new EmergencyLauncher(context, e);
-        onSuccess();
-      }
-
-      @Override
-      public void onSuccess() {
+      private void finish() {
         releaseDatabase();
         synchronized (UpdatesController.this) {
           mIsReadyToLaunch = true;
           UpdatesController.this.notify();
         }
+      }
+
+      @Override
+      public void onFailure(Exception e) {
+        mLauncher = new EmergencyLauncher(context, e);
+        finish();
+      }
+
+      @Override
+      public void onSuccess() {
+        finish();
       }
     });
 
