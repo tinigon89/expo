@@ -46,7 +46,7 @@ public class BadgeSettingNotificationBuilder extends ExpoNotificationBuilder {
   }
 
   private boolean shouldSetBadge() {
-    return getNotificationRequest().has(BADGE_KEY);
+    return (getNotificationBehavior() == null || getNotificationBehavior().shouldSetBadge()) && getNotificationRequest().has(BADGE_KEY);
   }
 
   private int getBadgeCount() {

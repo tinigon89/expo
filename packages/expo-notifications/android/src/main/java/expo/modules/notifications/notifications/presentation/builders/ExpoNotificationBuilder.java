@@ -108,8 +108,8 @@ public class ExpoNotificationBuilder extends ChannelAwareNotificationBuilder {
    * @return Whether the notification should play a sound.
    */
   private boolean shouldPlaySound() {
-    //                                                                         if SOUND_KEY is not an explicit false we fallback to true
-    return (getNotificationBehavior() == null || getNotificationBehavior().shouldPlaySound()) && !getNotificationRequest().optBoolean(SOUND_KEY, true);
+    //                                                                                           if SOUND_KEY is not an explicit false we fallback to true
+    return (getNotificationBehavior() == null || getNotificationBehavior().shouldPlaySound()) && getNotificationRequest().optBoolean(SOUND_KEY, true);
   }
 
   /**
@@ -122,8 +122,8 @@ public class ExpoNotificationBuilder extends ChannelAwareNotificationBuilder {
    * @return Whether the notification should vibrate.
    */
   private boolean shouldVibrate() {
-    //                                                                         if VIBRATE_KEY is not an explicit false we fallback to true
-    return (getNotificationBehavior() == null || getNotificationBehavior().shouldPlaySound()) && !getNotificationRequest().optBoolean(VIBRATE_KEY, true);
+    //                                                                                           if VIBRATE_KEY is not an explicit false we fallback to true
+    return (getNotificationBehavior() == null || getNotificationBehavior().shouldPlaySound()) && getNotificationRequest().optBoolean(VIBRATE_KEY, true);
   }
 
   /**
