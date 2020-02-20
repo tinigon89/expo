@@ -252,8 +252,9 @@ public class UpdatesController {
       return;
     }
 
+    boolean shouldCheckForUpdate = shouldCheckForUpdateOnLaunch(context);
     int delay = getUpdatesConfiguration().getLaunchWaitMs();
-    if (delay > 0) {
+    if (delay > 0 && shouldCheckForUpdate) {
       new Handler().postDelayed(this::finishTimeout, delay);
     } else {
       mTimeoutFinished = true;
@@ -286,7 +287,7 @@ public class UpdatesController {
       }
     });
 
-    if (shouldCheckForUpdateOnLaunch(context)) {
+    if (shouldCheckForUpdate) {
       AsyncTask.execute(() -> {
         UpdatesDatabase db = getDatabase();
         new RemoteLoader(context, db, mUpdatesDirectory)
