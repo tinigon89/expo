@@ -1,9 +1,5 @@
 package expo.modules.notifications.notifications.service;
 
-import android.app.Notification;
-
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,9 +7,9 @@ import java.util.WeakHashMap;
 
 import androidx.core.app.NotificationManagerCompat;
 import expo.modules.notifications.notifications.NotificationManager;
-import expo.modules.notifications.notifications.interfaces.NotificationBuilder;
-import expo.modules.notifications.notifications.interfaces.NotificationTrigger;
+import expo.modules.notifications.notifications.model.Notification;
 import expo.modules.notifications.notifications.model.NotificationBehavior;
+import expo.modules.notifications.notifications.model.NotificationRequest;
 import expo.modules.notifications.notifications.presentation.builders.ExpoNotificationBuilder;
 
 /**
@@ -46,9 +42,9 @@ public class ExpoNotificationsService extends BaseNotificationsService {
   }
 
   @Override
-  protected void onNotificationReceived(String identifier, JSONObject request, NotificationTrigger trigger) {
+  protected void onNotificationReceived(Notification notification) {
     for (NotificationManager listener : getListeners()) {
-      listener.onNotificationReceived(identifier, request, trigger);
+      listener.onNotificationReceived(notification);
     }
   }
 
@@ -72,42 +68,19 @@ public class ExpoNotificationsService extends BaseNotificationsService {
   /**
    * Callback called when the service is supposed to present a notification.
    *
-   * @param identifier Notification identifier
-   * @param request    Notification request
-   * @param behavior   Allowed notification behavior
+   * @param notification Notification presented
+   * @param behavior     Allowed notification behavior
    */
-  protected void onNotificationPresent(String identifier, JSONObject request, NotificationBehavior behavior) {
-    String tag = getNotificationTag(identifier, request);
-    int id = getNotificationId(identifier, request);
-    Notification notification = getNotification(request, behavior);
-    NotificationManagerCompat.from(this).notify(tag, id, notification);
+  @Override
+  protected void onNotificationPresent(expo.modules.notifications.notifications.model.Notification notification, NotificationBehavior behavior) {
+    String tag = notification.getNotificationRequest().getIdentifier();
+    int id = 0;
+    NotificationManagerCompat.from(this).notify(tag, id, getNotification(notification.getNotificationRequest(), behavior));
   }
 
-  /**
-   * @param identifier Notification identifier
-   * @param request    Notification request
-   * @return Tag to use to identify the notification.
-   */
-  protected String getNotificationTag(String identifier, JSONObject request) {
-    return identifier;
-  }
-
-  /**
-   * @param identifier Notification identifier
-   * @param request    Notification request
-   * @return A numeric identifier to use to identify the notification
-   */
-  protected int getNotificationId(String identifier, JSONObject request) {
-    return 0;
-  }
-
-  protected NotificationBuilder getNotificationBuilder() {
-    return new ExpoNotificationBuilder(this);
-  }
-
-  protected Notification getNotification(JSONObject request, NotificationBehavior behavior) {
-    return getNotificationBuilder()
-        .setNotificationRequest(request)
+  protected android.app.Notification getNotification(NotificationRequest request, NotificationBehavior behavior) {
+    return new ExpoNotificationBuilder(this)
+        .setNotificationContent(request.getContent())
         .setAllowedBehavior(behavior)
         .build();
   }
