@@ -5,8 +5,10 @@ import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as FileSystem from 'expo-file-system';
 import * as Notifications from 'expo-notifications';
+import { Alert } from 'react-native';
 
 import * as TestUtils from '../TestUtils';
+import { isInteractive } from '../utils/Environment';
 import { waitFor } from './helpers';
 
 export const name = 'expo-notifications';
@@ -631,6 +633,76 @@ export async function test(t) {
         await Notifications.dismissAllNotificationsAsync();
       });
     });
+
+    const onlyInteractiveDescribe = isInteractive ? t.describe : t.xdescribe;
+    onlyInteractiveDescribe('tapping on a notification', () => {
+      let subscription = null;
+      let event = null;
+
+      t.beforeEach(async () => {
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+          }),
+        });
+        subscription = Notifications.addNotificationResponseReceivedListener(anEvent => {
+          event = anEvent;
+        });
+      });
+
+      t.afterEach(() => {
+        if (subscription) {
+          subscription.remove();
+          subscription = null;
+        }
+        Notifications.setNotificationHandler(null);
+        event = null;
+      });
+
+      t.it(
+        'calls the “notification response received” listener with default action identifier',
+        async () => {
+          const secondsToTimeout = 5;
+          const shouldRun = await Promise.race([
+            askUserYesOrNo('Could you tap on a notification when it shows?'),
+            waitFor(secondsToTimeout * 1000),
+          ]);
+          if (!shouldRun) {
+            console.warn(
+              "Notification response test was skipped and marked as successful. It required user interaction which hasn't occured in time."
+            );
+            Alert.alert(
+              'Notification response test was skipped',
+              `The test required user interaction which hasn't occurred in time (${secondsToTimeout} seconds). It has been marked as passing. Better luck next time!`
+            );
+            return;
+          }
+          const notificationSpec = {
+            title: 'Tap me!',
+            message: 'Better be quick!',
+          };
+          await Notifications.presentNotificationAsync(notificationSpec);
+          let iterations = 0;
+          while (iterations < 5) {
+            iterations += 1;
+            if (event) {
+              break;
+            }
+            await waitFor(1000);
+          }
+          t.expect(event).not.toBeNull();
+          t.expect(event.actionIdentifier).toBe(Notifications.DEFAULT_ACTION_IDENTIFIER);
+          t.expect(event.notification).toEqual(
+            t.jasmine.objectContaining({
+              request: t.jasmine.objectContaining({
+                content: t.jasmine.objectContaining(notificationSpec),
+              }),
+            })
+          );
+        },
+        10000
+      );
+    });
   });
 }
 
@@ -682,4 +754,28 @@ async function sendTestPushNotification(expoPushToken, notificationOverrides) {
       throw new Error(`API error has occurred: ${receipt.details.error}`);
     }
   }
+}
+
+function askUserYesOrNo(title, message = '') {
+  return new Promise((resolve, reject) => {
+    try {
+      Alert.alert(
+        title,
+        message,
+        [
+          {
+            text: 'No',
+            onPress: () => resolve(false),
+          },
+          {
+            text: 'Yes',
+            onPress: () => resolve(true),
+          },
+        ],
+        { onDismiss: () => resolve(false) }
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
 }
