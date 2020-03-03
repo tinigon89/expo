@@ -3,12 +3,14 @@ package expo.modules.notifications.notifications.service;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.WeakHashMap;
 
 import androidx.core.app.NotificationManagerCompat;
 import expo.modules.notifications.notifications.NotificationManager;
 import expo.modules.notifications.notifications.model.Notification;
 import expo.modules.notifications.notifications.model.NotificationBehavior;
+import expo.modules.notifications.notifications.model.NotificationResponse;
 import expo.modules.notifications.notifications.presentation.builders.ExpoNotificationBuilder;
 
 /**
@@ -21,6 +23,8 @@ public class ExpoNotificationsService extends BaseNotificationsService {
    * is already registered and to iterate over when notifying of new token.
    */
   protected static WeakHashMap<NotificationManager, WeakReference<NotificationManager>> sListenersReferences = new WeakHashMap<>();
+
+  protected static Collection<NotificationResponse> sPendingNotificationResponses = new ArrayList<>();
 
   /**
    * Used only by {@link NotificationManager} instances. If you look for a place to register
@@ -37,6 +41,13 @@ public class ExpoNotificationsService extends BaseNotificationsService {
     if (!sListenersReferences.containsKey(listener)) {
       WeakReference<NotificationManager> listenerReference = new WeakReference<>(listener);
       sListenersReferences.put(listener, listenerReference);
+      if (!sPendingNotificationResponses.isEmpty()) {
+        Iterator<NotificationResponse> responseIterator = sPendingNotificationResponses.iterator();
+        while (responseIterator.hasNext()) {
+          listener.onNotificationResponseReceived(responseIterator.next());
+          responseIterator.remove();
+        }
+      }
     }
   }
 
@@ -62,6 +73,18 @@ public class ExpoNotificationsService extends BaseNotificationsService {
   @Override
   protected void onDismissAllNotifications() {
     NotificationManagerCompat.from(this).cancelAll();
+  }
+
+  @Override
+  protected void onNotificationResponseReceived(NotificationResponse response) {
+    Collection<NotificationManager> listeners = getListeners();
+    if (listeners.isEmpty()) {
+      sPendingNotificationResponses.add(response);
+    } else {
+      for (NotificationManager listener : listeners) {
+        listener.onNotificationResponseReceived(response);
+      }
+    }
   }
 
   /**
