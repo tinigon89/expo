@@ -13,10 +13,10 @@ export function addNotificationsDroppedListener(listener) {
 export function addNotificationResponseReceivedListener(listener) {
     return emitter.addListener(didReceiveNotificationResponseEventName, listener);
 }
-export function removeSubscription(subscription) {
+export function removeNotificationSubscription(subscription) {
     emitter.removeSubscription(subscription);
 }
-export function removeAllListeners() {
+export function removeAllNotificationListeners() {
     emitter.removeAllListeners(didReceiveNotificationEventName);
     emitter.removeAllListeners(didDropNotificationsEventName);
     emitter.removeAllListeners(didReceiveNotificationResponseEventName);
