@@ -22,7 +22,7 @@ public class NotificationSerializer {
   public static Bundle toBundle(String identifier, JSONObject notification, @Nullable NotificationTrigger trigger) {
     Bundle serializedNotification = new Bundle();
     serializedNotification.putString("identifier", identifier);
-    serializedNotification.putBundle("notification", toBundle(notification));
+    serializedNotification.putBundle("content", toBundle(notification));
     serializedNotification.putBundle("trigger", toBundle(trigger));
     return serializedNotification;
   }
