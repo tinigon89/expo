@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		0726F0592007E438004992E7 /* EXKernelAppRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 0726F0582007E438004992E7 /* EXKernelAppRecord.m */; };
 		0726F05C2007E446004992E7 /* EXKernelAppRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0726F05B2007E446004992E7 /* EXKernelAppRegistry.m */; };
@@ -17,8 +18,8 @@
 		0DBCB92B4EB6445CB2A162E4 /* RNSVGMarkerPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 417AEE2C283C4782885B8C12 /* RNSVGMarkerPosition.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		19382BA91EC2EACC001ED4A1 /* EXScopedBranchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 19382BA81EC2EACC001ED4A1 /* EXScopedBranchManager.m */; };
 		19B2EF751FB25A1A003F2E1B /* EXCachedResourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 19B2EF741FB25A1A003F2E1B /* EXCachedResourceManager.m */; };
-		2197FFB523C613A9003CA3B2 /* RNSharedElementContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2197FFB323C613A9003CA3B2 /* RNSharedElementContent.m */; };
 		2168B25C23E3058600A94C0D /* EXScopedFirebaseCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 2168B25A23E3058500A94C0D /* EXScopedFirebaseCore.m */; };
+		2197FFB523C613A9003CA3B2 /* RNSharedElementContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2197FFB323C613A9003CA3B2 /* RNSharedElementContent.m */; };
 		2519CCFC216B292600FA7C80 /* EXUserNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2519CCFB216B292600FA7C80 /* EXUserNotificationCenter.m */; };
 		2520E83A21ABEEF100D900A4 /* EXScopedFilePermissionModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 2520E83921ABEEF100D900A4 /* EXScopedFilePermissionModule.m */; };
 		255A630A2154FB89009FDFC6 /* EXPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 255A63092154FB88009FDFC6 /* EXPendingNotification.m */; };
@@ -223,7 +224,6 @@
 		B505BA2020CAF80D0046ACFB /* EXEnvironmentMocks.m in Sources */ = {isa = PBXBuildFile; fileRef = B505BA1A20CAF80D0046ACFB /* EXEnvironmentMocks.m */; };
 		B505BA2120CAF80D0046ACFB /* EXEnvironmentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B505BA1D20CAF80D0046ACFB /* EXEnvironmentTests.m */; };
 		B50C4C0B20EEBCE20090E5F9 /* EXApiV2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = B50C4C0A20EEBCE20090E5F9 /* EXApiV2Tests.m */; };
-		B51333431CE649FE00E9FC9E /* ExponentIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B51333421CE649FE00E9FC9E /* ExponentIntegrationTests.m */; };
 		B52217D61F146658002241BA /* EXKernelServiceRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = B52217D51F146658002241BA /* EXKernelServiceRegistry.m */; };
 		B526B5081E6A543500606CAB /* ExpoKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B526B5051E6A543500606CAB /* ExpoKit.m */; };
 		B54D2913205307380019411A /* EXAppLoadingCancelView.m in Sources */ = {isa = PBXBuildFile; fileRef = B54D2912205307380019411A /* EXAppLoadingCancelView.m */; };
@@ -241,7 +241,6 @@
 		B5854EDB20D07944001D2F6E /* EXProdServiceTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = B5854EDA20D07944001D2F6E /* EXProdServiceTestCase.m */; };
 		B5854EEB20D07D4D001D2F6E /* EXLinkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B5854EEA20D07D4D001D2F6E /* EXLinkingTests.m */; };
 		B58F125C20B73455003E13F1 /* EXEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = B58F125B20B73455003E13F1 /* EXEnvironment.m */; };
-		B59B59491F6369480083850D /* EXTestEnvironment.plist in Resources */ = {isa = PBXBuildFile; fileRef = B59B59481F6369480083850D /* EXTestEnvironment.plist */; };
 		B5A358621C7E6C4300D1BE67 /* EXAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A358611C7E6C4300D1BE67 /* EXAnalytics.m */; };
 		B5A473DA204A66F70035C61C /* EXAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A473D4204A66F60035C61C /* EXAppViewController.m */; };
 		B5A473DC204A66F70035C61C /* EXErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A473D6204A66F60035C61C /* EXErrorView.m */; };
@@ -303,6 +302,7 @@
 		B5FB74EF1FF6DADC001C764B /* EXTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB74231FF6DADB001C764B /* EXTest.m */; };
 		B5FB74F01FF6DADC001C764B /* EXScopedBridgeModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB74261FF6DADB001C764B /* EXScopedBridgeModule.m */; };
 		B5FB74F11FF6DADC001C764B /* EXScopedEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB74281FF6DADB001C764B /* EXScopedEventEmitter.m */; };
+		B75F881E8F9641B785F76CB0 /* RNSVGForeignObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A0DCD2EBCF2B4FDC80E8EBE3 /* RNSVGForeignObject.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		B7FE7D4B1CE74F38AAA8941D /* RNSVGMarkerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D93FFB9A64504D3E92FE8931 /* RNSVGMarkerManager.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		BB36BC632135C98E00AFFD58 /* RNSScreenContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = BB36BC5E2135C98D00AFFD58 /* RNSScreenContainer.m */; };
 		BB36BC642135C98E00AFFD58 /* RNSScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = BB36BC612135C98D00AFFD58 /* RNSScreen.m */; };
@@ -315,12 +315,12 @@
 		BE23D5E5DA574BA3A73C19C3 /* RNSharedElementTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E31ABB8C341358B20C89C /* RNSharedElementTransition.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		BE988DDEFEFD40FEA5C44BFE /* RNDateTimePickerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D86827B3D57944D8A25F37F8 /* RNDateTimePickerManager.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		C07CF8B597D24E3D9BAF4D31 /* AIRGoogleMapHeatmap.m in Sources */ = {isa = PBXBuildFile; fileRef = 65028F8B8C154DE59D8AC3E3 /* AIRGoogleMapHeatmap.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		C1A9EE2CB1DF4BD8936C3C7F /* RNSVGForeignObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8796D576855445C7AE7F4659 /* RNSVGForeignObjectManager.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		CD4BAD342092A30A009A1287 /* EXAR.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4BAD332092A30A009A1287 /* EXAR.m */; };
 		D0BF188CA1D140ACA64BB49D /* RNCMaskedViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 78EFF1819B1C44F2A92FC309 /* RNCMaskedViewManager.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DE9DE727B5D75D6A80905846 /* libPods-Exponent.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 39CE0C0AB7A919742FB12FF1 /* libPods-Exponent.a */; };
 		E77A18FAA07E47EFBBDD7338 /* ReactNativePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D6195E420E433AA7BB8584 /* ReactNativePageView.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		E7F4DCD62B6043AEB2B9F2B5 /* RNCWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E6E68AB99C5B4BA58B372F19 /* RNCWebViewManager.m */; settings = {COMPILER_FLAGS = "-w"; }; };
-		EF5E8C163603C21D7DA45E6C /* libPods-ExponentIntegrationTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D52770593795F4C7AC872315 /* libPods-ExponentIntegrationTests.a */; };
 		F11E531121601059007ACF56 /* EXHeadlessAppRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = F11E530D21601058007ACF56 /* EXHeadlessAppRecord.m */; };
 		F11E531221601059007ACF56 /* EXHeadlessAppLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = F11E531021601059007ACF56 /* EXHeadlessAppLoader.m */; };
 		F12A1AB922ABD4BA008542C6 /* generate-dynamic-macros.sh in Resources */ = {isa = PBXBuildFile; fileRef = F12A1AB822ABD4BA008542C6 /* generate-dynamic-macros.sh */; };
@@ -331,19 +331,10 @@
 		F21159F62C244F3BA8CDE98B /* RCTConvert+UIPageViewControllerTransitionStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 4670FD34142C4706BEA4FD1E /* RCTConvert+UIPageViewControllerTransitionStyle.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		F77DDB931E04AC1100624CA2 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F77DDB921E04AC1100624CA2 /* SafariServices.framework */; };
 		FA526593B78C87A7E1C34561 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D8BAB8D6102FB06BE5BE10B /* libPods-Tests.a */; };
-		B75F881E8F9641B785F76CB0 /* RNSVGForeignObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A0DCD2EBCF2B4FDC80E8EBE3 /* RNSVGForeignObject.m */; settings = {COMPILER_FLAGS = "-w"; }; };
-		C1A9EE2CB1DF4BD8936C3C7F /* RNSVGForeignObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8796D576855445C7AE7F4659 /* RNSVGForeignObjectManager.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		B505BA1320CAF77A0046ACFB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 78CEE2B81ACD07D70095B124 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 78CEE2BF1ACD07D70095B124;
-			remoteInfo = Exponent;
-		};
-		B51333451CE649FE00E9FC9E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78CEE2B81ACD07D70095B124 /* Project object */;
 			proxyType = 1;
@@ -378,10 +369,10 @@
 		19B2EF731FB25A1A003F2E1B /* EXCachedResourceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EXCachedResourceManager.h; sourceTree = "<group>"; };
 		19B2EF741FB25A1A003F2E1B /* EXCachedResourceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EXCachedResourceManager.m; sourceTree = "<group>"; };
 		1E9033E268A74098A882CCEB /* RNSharedElementTransitionManager.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransitionManager.m; sourceTree = "<group>"; };
-		2197FFB323C613A9003CA3B2 /* RNSharedElementContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementContent.m; sourceTree = "<group>"; };
-		2197FFB423C613A9003CA3B2 /* RNSharedElementContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementContent.h; sourceTree = "<group>"; };
 		2168B25A23E3058500A94C0D /* EXScopedFirebaseCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXScopedFirebaseCore.m; sourceTree = "<group>"; };
 		2168B25B23E3058500A94C0D /* EXScopedFirebaseCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXScopedFirebaseCore.h; sourceTree = "<group>"; };
+		2197FFB323C613A9003CA3B2 /* RNSharedElementContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementContent.m; sourceTree = "<group>"; };
+		2197FFB423C613A9003CA3B2 /* RNSharedElementContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementContent.h; sourceTree = "<group>"; };
 		23181375B61140378B02E53B /* RNSharedElementStyle.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSharedElementStyle.h; sourceTree = "<group>"; };
 		2519CCFA216B292600FA7C80 /* EXUserNotificationCenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EXUserNotificationCenter.h; sourceTree = "<group>"; };
 		2519CCFB216B292600FA7C80 /* EXUserNotificationCenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EXUserNotificationCenter.m; sourceTree = "<group>"; };
@@ -398,7 +389,6 @@
 		28E6BF17A5204DD4814864E1 /* RNSVGContextBrush.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSVGContextBrush.h; sourceTree = "<group>"; };
 		2C8BF65CC9F2438FAD9F906D /* RNCWebView.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNCWebView.m; sourceTree = "<group>"; };
 		2CC6701F60EF495685FCD7B9 /* RNCWebView.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNCWebView.h; sourceTree = "<group>"; };
-		2EBAA829A2238361F2EC490B /* Pods-ExponentIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExponentIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-ExponentIntegrationTests/Pods-ExponentIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		312D2ED1234DF2DC002F4049 /* EXScopedFacebook.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EXScopedFacebook.m; sourceTree = "<group>"; };
 		312D2ED3234DF2F6002F4049 /* EXScopedFacebook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EXScopedFacebook.h; sourceTree = "<group>"; };
 		31361A582260B2F600662769 /* EXScopedSecureStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EXScopedSecureStore.h; sourceTree = "<group>"; };
@@ -785,11 +775,13 @@
 		7B5470F008B04F93A7E19D7B /* RNSVGMarker.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSVGMarker.m; sourceTree = "<group>"; };
 		7D8BAB8D6102FB06BE5BE10B /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E7497021CDE4FBA925D5F50 /* RNSharedElementTransitionItem.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransitionItem.m; sourceTree = "<group>"; };
+		7F6CB974983B435DB3C2F7BE /* RNSVGForeignObject.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSVGForeignObject.h; sourceTree = "<group>"; };
 		80598B49D2DB4720B1935D89 /* RNSharedElementNodeManager.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementNodeManager.m; sourceTree = "<group>"; };
-		8A3442268EC4E750318A4755 /* Pods-ExponentIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExponentIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-ExponentIntegrationTests/Pods-ExponentIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8796D576855445C7AE7F4659 /* RNSVGForeignObjectManager.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSVGForeignObjectManager.m; sourceTree = "<group>"; };
 		90EDC72E21EF251B7424E2E5 /* Pods-Exponent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Exponent.release.xcconfig"; path = "Target Support Files/Pods-Exponent/Pods-Exponent.release.xcconfig"; sourceTree = "<group>"; };
 		993696B522A54FE2B8DC27D4 /* RNSVGMarkerPosition.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSVGMarkerPosition.h; sourceTree = "<group>"; };
 		9A34C4ECEE0D49B6AD86972D /* RNCConnectionState.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNCConnectionState.h; sourceTree = "<group>"; };
+		A0DCD2EBCF2B4FDC80E8EBE3 /* RNSVGForeignObject.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSVGForeignObject.m; sourceTree = "<group>"; };
 		A5B705024D7B4371B0EB68EC /* AIRGoogleMapHeatmapManager.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = AIRGoogleMapHeatmapManager.m; sourceTree = "<group>"; };
 		A7848BD4CFE74709BDC8E8B0 /* RNSScreenStackHeaderConfig.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSScreenStackHeaderConfig.h; sourceTree = "<group>"; };
 		AA6C990084ED43EFA6B281D9 /* RCTConvert+UIPageViewControllerTransitionStyle.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+UIPageViewControllerTransitionStyle.h"; sourceTree = "<group>"; };
@@ -804,7 +796,6 @@
 		B505BA1C20CAF80D0046ACFB /* EXEnvironmentMocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXEnvironmentMocks.h; sourceTree = "<group>"; };
 		B505BA1D20CAF80D0046ACFB /* EXEnvironmentTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXEnvironmentTests.m; sourceTree = "<group>"; };
 		B50C4C0A20EEBCE20090E5F9 /* EXApiV2Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EXApiV2Tests.m; sourceTree = "<group>"; };
-		B51333401CE649FE00E9FC9E /* ExponentIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExponentIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B51333421CE649FE00E9FC9E /* ExponentIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExponentIntegrationTests.m; sourceTree = "<group>"; };
 		B51333441CE649FE00E9FC9E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B52217D41F146658002241BA /* EXKernelServiceRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXKernelServiceRegistry.h; sourceTree = "<group>"; };
@@ -981,6 +972,7 @@
 		C349E74BFFF643C38858FD6F /* RNSVGContextBrush.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSVGContextBrush.m; sourceTree = "<group>"; };
 		C6C45542575546F8AAC2AE50 /* RNSharedElementNodeManager.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSharedElementNodeManager.h; sourceTree = "<group>"; };
 		C97E31ABB8C341358B20C89C /* RNSharedElementTransition.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransition.m; sourceTree = "<group>"; };
+		CB140B5293CF4E4B9FA74E62 /* RNSVGForeignObjectManager.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSVGForeignObjectManager.h; sourceTree = "<group>"; };
 		CC72501D815B491FBC42AACA /* RNSharedElementTypes.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTypes.h; sourceTree = "<group>"; };
 		CD4BAD322092A30A009A1287 /* EXAR.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EXAR.h; sourceTree = "<group>"; };
 		CD4BAD332092A30A009A1287 /* EXAR.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EXAR.m; sourceTree = "<group>"; };
@@ -988,7 +980,6 @@
 		D47336D662754EDA8EA4BC55 /* RNDateTimePicker.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNDateTimePicker.m; sourceTree = "<group>"; };
 		D47B9E6257F1413387F5CD67 /* ReactViewPagerManager.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = ReactViewPagerManager.h; sourceTree = "<group>"; };
 		D48607EC4F61D3E513BBF4EF /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		D52770593795F4C7AC872315 /* libPods-ExponentIntegrationTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ExponentIntegrationTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D86827B3D57944D8A25F37F8 /* RNDateTimePickerManager.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNDateTimePickerManager.m; sourceTree = "<group>"; };
 		D93FFB9A64504D3E92FE8931 /* RNSVGMarkerManager.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RNSVGMarkerManager.m; sourceTree = "<group>"; };
 		DC16FA23D2824BC78C9D6E51 /* RNCWebViewManager.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNCWebViewManager.h; sourceTree = "<group>"; };
@@ -1012,10 +1003,6 @@
 		F167C43A209C7EE600F01382 /* EXUtilService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EXUtilService.m; sourceTree = "<group>"; };
 		F77DDB921E04AC1100624CA2 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		FA872B0AA66044B4B8C574F0 /* RNSScreenStack.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; path = RNSScreenStack.h; sourceTree = "<group>"; };
-		7F6CB974983B435DB3C2F7BE /* RNSVGForeignObject.h */ = {isa = PBXFileReference; name = "RNSVGForeignObject.h"; path = "RNSVGForeignObject.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
-		A0DCD2EBCF2B4FDC80E8EBE3 /* RNSVGForeignObject.m */ = {isa = PBXFileReference; name = "RNSVGForeignObject.m"; path = "RNSVGForeignObject.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
-		CB140B5293CF4E4B9FA74E62 /* RNSVGForeignObjectManager.h */ = {isa = PBXFileReference; name = "RNSVGForeignObjectManager.h"; path = "RNSVGForeignObjectManager.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
-		8796D576855445C7AE7F4659 /* RNSVGForeignObjectManager.m */ = {isa = PBXFileReference; name = "RNSVGForeignObjectManager.m"; path = "RNSVGForeignObjectManager.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1033,14 +1020,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA526593B78C87A7E1C34561 /* libPods-Tests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B513333D1CE649FE00E9FC9E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EF5E8C163603C21D7DA45E6C /* libPods-ExponentIntegrationTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1063,7 +1042,6 @@
 			children = (
 				F77DDB921E04AC1100624CA2 /* SafariServices.framework */,
 				39CE0C0AB7A919742FB12FF1 /* libPods-Exponent.a */,
-				D52770593795F4C7AC872315 /* libPods-ExponentIntegrationTests.a */,
 				7D8BAB8D6102FB06BE5BE10B /* libPods-Tests.a */,
 			);
 			name = Frameworks;
@@ -1562,7 +1540,6 @@
 			isa = PBXGroup;
 			children = (
 				78CEE2C01ACD07D70095B124 /* Exponent.app */,
-				B51333401CE649FE00E9FC9E /* ExponentIntegrationTests.xctest */,
 				B505BA0E20CAF77A0046ACFB /* Tests.xctest */,
 			);
 			name = Products;
@@ -1621,8 +1598,6 @@
 			children = (
 				02F26B94889E4EB5BA470AFB /* Pods-Exponent.debug.xcconfig */,
 				90EDC72E21EF251B7424E2E5 /* Pods-Exponent.release.xcconfig */,
-				8A3442268EC4E750318A4755 /* Pods-ExponentIntegrationTests.debug.xcconfig */,
-				2EBAA829A2238361F2EC490B /* Pods-ExponentIntegrationTests.release.xcconfig */,
 				D48607EC4F61D3E513BBF4EF /* Pods-Tests.debug.xcconfig */,
 				B6982387E180A3864221896B /* Pods-Tests.release.xcconfig */,
 			);
@@ -2341,25 +2316,6 @@
 			productReference = B505BA0E20CAF77A0046ACFB /* Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B513333F1CE649FE00E9FC9E /* ExponentIntegrationTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B513334A1CE649FE00E9FC9E /* Build configuration list for PBXNativeTarget "ExponentIntegrationTests" */;
-			buildPhases = (
-				D7A644915E8C9561CC604EC1 /* [CP] Check Pods Manifest.lock */,
-				B513333C1CE649FE00E9FC9E /* Sources */,
-				B513333D1CE649FE00E9FC9E /* Frameworks */,
-				B513333E1CE649FE00E9FC9E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B51333461CE649FE00E9FC9E /* PBXTargetDependency */,
-			);
-			name = ExponentIntegrationTests;
-			productName = ExponentIntegrationTests;
-			productReference = B51333401CE649FE00E9FC9E /* ExponentIntegrationTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -2401,10 +2357,6 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 78CEE2BF1ACD07D70095B124;
 					};
-					B513333F1CE649FE00E9FC9E = {
-						CreatedOnToolsVersion = 7.3.1;
-						TestTargetID = 78CEE2BF1ACD07D70095B124;
-					};
 				};
 			};
 			buildConfigurationList = 78CEE2BB1ACD07D70095B124 /* Build configuration list for PBXProject "Exponent" */;
@@ -2422,7 +2374,6 @@
 			projectRoot = "";
 			targets = (
 				78CEE2BF1ACD07D70095B124 /* Exponent */,
-				B513333F1CE649FE00E9FC9E /* ExponentIntegrationTests */,
 				B505BA0D20CAF77A0046ACFB /* Tests */,
 			);
 		};
@@ -2455,14 +2406,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B513333E1CE649FE00E9FC9E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B59B59491F6369480083850D /* EXTestEnvironment.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2604,28 +2547,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/Build-Phases/cleanup-dynamic-macros.sh\n";
-		};
-		D7A644915E8C9561CC604EC1 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ExponentIntegrationTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2950,14 +2871,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B513333C1CE649FE00E9FC9E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B51333431CE649FE00E9FC9E /* ExponentIntegrationTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2965,11 +2878,6 @@
 			isa = PBXTargetDependency;
 			target = 78CEE2BF1ACD07D70095B124 /* Exponent */;
 			targetProxy = B505BA1320CAF77A0046ACFB /* PBXContainerItemProxy */;
-		};
-		B51333461CE649FE00E9FC9E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 78CEE2BF1ACD07D70095B124 /* Exponent */;
-			targetProxy = B51333451CE649FE00E9FC9E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3208,40 +3116,6 @@
 			};
 			name = Release;
 		};
-		B51333471CE649FE00E9FC9E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8A3442268EC4E750318A4755 /* Pods-ExponentIntegrationTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = ExponentIntegrationTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = host.exp.ExponentIntegrationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Exponent.app/Exponent";
-			};
-			name = Debug;
-		};
-		B51333481CE649FE00E9FC9E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2EBAA829A2238361F2EC490B /* Pods-ExponentIntegrationTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = ExponentIntegrationTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = host.exp.ExponentIntegrationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Exponent.app/Exponent";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -3268,15 +3142,6 @@
 			buildConfigurations = (
 				B505BA1520CAF77A0046ACFB /* Debug */,
 				B505BA1620CAF77A0046ACFB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B513334A1CE649FE00E9FC9E /* Build configuration list for PBXNativeTarget "ExponentIntegrationTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B51333471CE649FE00E9FC9E /* Debug */,
-				B51333481CE649FE00E9FC9E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
