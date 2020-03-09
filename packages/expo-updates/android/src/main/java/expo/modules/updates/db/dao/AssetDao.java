@@ -47,6 +47,9 @@ public abstract class AssetDao {
   @Query("SELECT * FROM assets WHERE marked_for_deletion = 1;")
   public abstract List<AssetEntity> _loadAssetsMarkedForDeletion();
 
+  @Query("DELETE FROM assets WHERE marked_for_deletion = 1;")
+  public abstract void _deleteAssetsMarkedForDeletion();
+
   @Query("SELECT id FROM assets WHERE url = :url LIMIT 1;")
   public abstract List<Long> _loadAssetWithUrl(Uri url);
 
@@ -90,16 +93,17 @@ public abstract class AssetDao {
   }
 
   @Transaction
-  public List<AssetEntity> markAndLoadAssetsForDeletion() {
+  public List<AssetEntity> deleteUnusedAssets() {
     // the simplest way to mark the assets we want to delete
     // is to mark all assets for deletion, then go back and unmark
     // those assets in updates we want to keep
     // this is safe since this is a transaction and will be rolled back upon failure
     _markAllAssetsForDeletion();
     _unmarkUsedAssetsFromDeletion();
-    return _loadAssetsMarkedForDeletion();
-  }
 
-  @Delete
-  public abstract void deleteAssets(List<AssetEntity> assets);
+    List<AssetEntity> deletedAssets = _loadAssetsMarkedForDeletion();
+    _deleteAssetsMarkedForDeletion();
+
+    return deletedAssets;
+  }
 }

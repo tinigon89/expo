@@ -21,11 +21,12 @@ public class Reaper {
     }
 
     List<UpdateEntity> allUpdates = database.updateDao().loadAllUpdates();
-    List<UpdateEntity> markedUpdates = selectionPolicy.markUpdatesForDeletion(allUpdates, launchedUpdate);
-    database.updateDao().updateUpdates(markedUpdates);
-    List<AssetEntity> assetsToDelete = database.assetDao().markAndLoadAssetsForDeletion();
 
-    LinkedList<AssetEntity> deletedAssets = new LinkedList<>();
+    List<UpdateEntity> updatesToDelete = selectionPolicy.selectUpdatesToDelete(allUpdates, launchedUpdate);
+    database.updateDao().deleteUpdates(updatesToDelete);
+
+    List<AssetEntity> assetsToDelete = database.assetDao().deleteUnusedAssets();
+
     LinkedList<AssetEntity> erroredAssets = new LinkedList<>();
 
     for (AssetEntity asset : assetsToDelete) {
@@ -36,9 +37,7 @@ public class Reaper {
 
       File path = new File(updatesDirectory, asset.relativePath);
       try {
-        if (!path.exists() || path.delete()) {
-          deletedAssets.add(asset);
-        } else {
+        if (path.exists() && !path.delete()) {
           Log.e(TAG, "Failed to delete asset with URL " + asset.url + " at path " + path.toString());
           erroredAssets.add(asset);
         }
@@ -53,7 +52,6 @@ public class Reaper {
       File path = new File(updatesDirectory, asset.relativePath);
       try {
         if (!path.exists() || path.delete()) {
-          deletedAssets.add(asset);
           erroredAssets.remove(asset);
         } else {
           Log.e(TAG, "Retried and failed again deleting asset with URL " + asset.url + " at path " + path.toString());
@@ -63,8 +61,5 @@ public class Reaper {
         erroredAssets.add(asset);
       }
     }
-
-    database.assetDao().deleteAssets(deletedAssets);
-    database.updateDao().deleteUnusedUpdates();
   }
 }

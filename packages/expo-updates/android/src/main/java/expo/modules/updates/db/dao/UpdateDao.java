@@ -1,5 +1,6 @@
 package expo.modules.updates.db.dao;
 
+import androidx.room.Delete;
 import androidx.room.RoomWarnings;
 import androidx.room.Update;
 import expo.modules.updates.db.enums.UpdateStatus;
@@ -37,15 +38,6 @@ public abstract class UpdateDao {
   @Query("UPDATE updates SET status = :status WHERE id = :id;")
   public abstract void _markUpdateWithStatus(UpdateStatus status, UUID id);
 
-  @Query("UPDATE updates SET keep = 0, status = :status WHERE commit_time < (SELECT commit_time FROM updates WHERE id = :id);")
-  public abstract void _markOlderUpdatesForDeletion(UpdateStatus status, UUID id);
-
-  @Query("DELETE FROM updates_assets WHERE update_id IN (SELECT id FROM updates WHERE keep = 0);")
-  public abstract void _deleteUnusedUpdatesAssets();
-
-  @Query("DELETE FROM updates WHERE keep = 0;")
-  public abstract void _deleteUnusedUpdateEntities();
-
 
   /**
    * for public use
@@ -77,12 +69,6 @@ public abstract class UpdateDao {
     _keepUpdate(update.id);
   }
 
-  @Update
-  public abstract void updateUpdates(List<UpdateEntity> updates);
-
-  @Transaction
-  public void deleteUnusedUpdates() {
-    _deleteUnusedUpdatesAssets();
-    _deleteUnusedUpdateEntities();
-  }
+  @Delete
+  public abstract void deleteUpdates(List<UpdateEntity> updates);
 }
