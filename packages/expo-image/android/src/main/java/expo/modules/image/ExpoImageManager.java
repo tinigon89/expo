@@ -1,15 +1,22 @@
 package expo.modules.image;
 
-import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.annotations.ReactProp;
 
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public class ExpoImageManager extends SimpleViewManager<View> {
+public class ExpoImageManager extends SimpleViewManager<ImageView> {
   private static final String REACT_CLASS = "ExpoImage";
+
+  private static final String URI_KEY = "uri";
 
   private RequestManager mRequestManager;
 
@@ -23,12 +30,44 @@ public class ExpoImageManager extends SimpleViewManager<View> {
     return REACT_CLASS;
   }
 
+  // Props setters
+
+  @ReactProp(name = "source")
+  public void setSource(ImageView view, @Nullable ReadableMap sourceMap) {
+    if (sourceMap == null || sourceMap.getString(URI_KEY) == null) {
+      clearImageView(view);
+      return;
+    }
+
+    mRequestManager
+        .load(sourceMap.getString(URI_KEY))
+        .into(view);
+  }
+
+  // View lifecycle
+
   @NonNull
   @Override
-  public View createViewInstance(@NonNull ThemedReactContext context) {
-    // TODO: Implement some actually useful functionality
-    AppCompatCheckBox cb = new AppCompatCheckBox(c);
-    cb.setChecked(true);
-    return cb;
+  public ImageView createViewInstance(@NonNull ThemedReactContext context) {
+    ImageView imageView = new ImageView(context);
+
+    // For now let's set scale type to FIT_XY
+    // to make behavior same on all platforms.
+    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+    return imageView;
+  }
+
+  @Override
+  public void onDropViewInstance(@NonNull ImageView view) {
+    clearImageView(view);
+    super.onDropViewInstance(view);
+  }
+
+  // Helpers
+
+  private void clearImageView(@NonNull ImageView view) {
+    mRequestManager.clear(view);
+    view.setImageDrawable(null);
   }
 }
