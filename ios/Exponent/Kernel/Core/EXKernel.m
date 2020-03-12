@@ -1,6 +1,6 @@
 // Copyright 2015-present 650 Industries. All rights reserved.
 
-#import "EXAnalytics.h"
+//#import "EXAnalytics.h"
 #import "EXAppState.h"
 #import "EXAppViewController.h"
 #import "EXBuildConstants.h"
@@ -72,7 +72,7 @@ NSString * const kEXReloadActiveAppRequest = @"EXReloadActiveAppRequest";
                              UIApplicationDidFinishLaunchingNotification,
                              UIApplicationWillResignActiveNotification,
                              UIApplicationWillEnterForegroundNotification]) {
-      
+
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(_handleAppStateDidChange:)
                                                    name:name
@@ -108,9 +108,9 @@ NSString * const kEXReloadActiveAppRequest = @"EXReloadActiveAppRequest";
   }
   NSString *validatedSdkVersion = [[EXVersions sharedInstance] availableSdkVersionForManifest:appRecord.appLoader.manifest];
   NSDictionary *props = (validatedSdkVersion) ? @{ @"SDK_VERSION": validatedSdkVersion } : @{};
-  [[EXAnalytics sharedInstance] logEvent:eventId
-                             manifestUrl:appRecord.appLoader.manifestUrl
-                         eventProperties:props];
+  // [[EXAnalytics sharedInstance] logEvent:eventId
+  //                            manifestUrl:appRecord.appLoader.manifestUrl
+  //                        eventProperties:props];
 }
 
 #pragma mark - bridge registry delegate
@@ -151,12 +151,12 @@ NSString * const kEXReloadActiveAppRequest = @"EXReloadActiveAppRequest";
   if ([destinationBridge respondsToSelector:@selector(batchedBridge)]) {
     id batchedBridge = [destinationBridge batchedBridge];
     id moduleData = [batchedBridge moduleDataForName:moduleName];
-    
+
     // React Native before SDK 11 didn't strip the "RCT" prefix from module names
     if (!moduleData && ![moduleName hasPrefix:@"RCT"]) {
       moduleData = [batchedBridge moduleDataForName:[@"RCT" stringByAppendingString:moduleName]];
     }
-    
+
     if (moduleData) {
       return [moduleData instance];
     }
@@ -264,7 +264,7 @@ NSString * const kEXReloadActiveAppRequest = @"EXReloadActiveAppRequest";
   if (!_browserController) {
     return;
   }
-  
+
   if (_visibleApp != _appRegistry.homeAppRecord) {
     [EXUtil performSynchronouslyOnMainThread:^{
       [self->_browserController toggleMenuWithCompletion:nil];
@@ -315,11 +315,11 @@ NSString * const kEXReloadActiveAppRequest = @"EXReloadActiveAppRequest";
         [appStateModule setState:@"active"];
       }
       _visibleApp = appRecord;
-      [[EXAnalytics sharedInstance] logAppVisibleEvent];
+      //[[EXAnalytics sharedInstance] logAppVisibleEvent];
     } else {
       _visibleApp = nil;
     }
-    
+
     if (_visibleApp && _visibleApp != _appRegistry.homeAppRecord) {
       [self _unregisterUnusedAppRecords];
     }
@@ -340,7 +340,7 @@ NSString * const kEXReloadActiveAppRequest = @"EXReloadActiveAppRequest";
 - (void)_handleAppStateDidChange:(NSNotification *)notification
 {
   NSString *newState;
-  
+
   if ([notification.name isEqualToString:UIApplicationWillResignActiveNotification]) {
     newState = @"inactive";
   } else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
@@ -360,7 +360,7 @@ NSString * const kEXReloadActiveAppRequest = @"EXReloadActiveAppRequest";
       }
     }
   }
-  
+
   if (_visibleApp) {
     EXReactAppManager *appManager = _visibleApp.appManager;
     id<EXAppStateProtocol> appStateModule = [self nativeModuleForAppManager:appManager named:@"AppState"];

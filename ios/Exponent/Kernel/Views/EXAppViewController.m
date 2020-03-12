@@ -2,7 +2,7 @@
 
 @import UIKit;
 
-#import "EXAnalytics.h"
+//#import "EXAnalytics.h"
 #import "EXAppLoader.h"
 #import "EXAppLoadingView.h"
 #import "EXAppViewController.h"
@@ -202,12 +202,12 @@ NS_ASSUME_NONNULL_BEGIN
 {
   if (_backgroundedControllers != nil) {
     __block UIViewController *parentController = self;
-    
+
     [_backgroundedControllers enumerateObjectsUsingBlock:^(UIViewController * _Nonnull viewController, NSUInteger idx, BOOL * _Nonnull stop) {
       [parentController presentViewController:viewController animated:NO completion:nil];
       parentController = viewController;
     }];
-    
+
     _backgroundedControllers = nil;
   }
 }
@@ -215,12 +215,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)backgroundControllers
 {
   UIViewController *childController = [self presentedViewController];
-  
+
   if (childController != nil) {
     if (_backgroundedControllers == nil) {
       _backgroundedControllers = [NSMutableArray new];
     }
-    
+
     while (childController != nil) {
       [_backgroundedControllers addObject:childController];
       childController = childController.presentedViewController;
@@ -275,7 +275,7 @@ NS_ASSUME_NONNULL_BEGIN
   reactView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
   [self _setRootViewBackgroundColor:reactView];
-  
+
   [_contentView removeFromSuperview];
   _contentView = reactView;
   [self.view addSubview:_contentView];
@@ -474,7 +474,7 @@ NS_ASSUME_NONNULL_BEGIN
     _errorView.error = error;
     _contentView = _errorView;
     [self.view addSubview:_contentView];
-    [[EXAnalytics sharedInstance] logErrorVisibleEvent];
+    //[[EXAnalytics sharedInstance] logErrorVisibleEvent];
   }
 }
 

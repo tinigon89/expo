@@ -1,6 +1,6 @@
 // Copyright 2015-present 650 Industries. All rights reserved.
 
-#import "EXAnalytics.h"
+//#import "EXAnalytics.h"
 #import "EXBuildConstants.h"
 #import "EXKernelUtil.h"
 #import "ExpoKit.h"
@@ -62,10 +62,10 @@ NSString * const kEXEmbeddedManifestResourceName = @"shell-app-manifest";
   // use bundled EXShell.plist
   NSString *configPath = [[NSBundle mainBundle] pathForResource:@"EXShell" ofType:@"plist"];
   NSDictionary *shellConfig = (configPath) ? [NSDictionary dictionaryWithContentsOfFile:configPath] : [NSDictionary dictionary];
-  
+
   // use ExpoKit dev url from EXBuildConstants
   NSString *expoKitDevelopmentUrl = [EXBuildConstants sharedInstance].expoKitDevelopmentUrl;
-  
+
   // use bundled info.plist
   NSDictionary *infoPlist = [[NSBundle mainBundle] infoDictionary];
 
@@ -80,24 +80,24 @@ NSString * const kEXEmbeddedManifestResourceName = @"shell-app-manifest";
       embeddedManifest = (NSDictionary *)manifest;
     }
   }
-  
+
   BOOL isDetached = NO;
 #ifdef EX_DETACHED
   isDetached = YES;
 #endif
-  
+
   BOOL isDebugXCodeScheme = NO;
 #if DEBUG
   isDebugXCodeScheme = YES;
 #endif
-  
+
   BOOL isUserDetach = NO;
   if (isDetached) {
 #ifndef EX_DETACHED_SERVICE
   isUserDetach = YES;
 #endif
   }
-  
+
   [self _loadShellConfig:shellConfig
            withInfoPlist:infoPlist
        withExpoKitDevUrl:expoKitDevelopmentUrl
@@ -143,14 +143,14 @@ NSString * const kEXEmbeddedManifestResourceName = @"shell-app-manifest";
                                        reason:@"This app is configured to be a standalone app, but does not specify a standalone manifest url."
                                      userInfo:nil];
       }
-      
+
       // load bundleUrl from embedded manifest
       [self _loadEmbeddedBundleUrlWithManifest:embeddedManifest];
 
       // load everything else from EXShell
       [self _loadMiscPropertiesWithConfig:shellConfig andInfoPlist:infoPlist];
 
-      [self _setAnalyticsPropertiesWithStandaloneManifestUrl:_standaloneManifestUrl isUserDetached:isUserDetach];
+      //[self _setAnalyticsPropertiesWithStandaloneManifestUrl:_standaloneManifestUrl isUserDetached:isUserDetach];
     }
   }
   _allManifestUrls = allManifestUrls;
@@ -219,17 +219,17 @@ NSString * const kEXEmbeddedManifestResourceName = @"shell-app-manifest";
   }
 }
 
-- (void)_setAnalyticsPropertiesWithStandaloneManifestUrl:(NSString *)shellManifestUrl
-                                     isUserDetached:(BOOL)isUserDetached
-{
-  if (_testEnvironment == EXTestEnvironmentNone) {
-    [[EXAnalytics sharedInstance] setUserProperties:@{ @"INITIAL_URL": shellManifestUrl }];
-    [CrashlyticsKit setObjectValue:_standaloneManifestUrl forKey:@"initial_url"];
-    if (isUserDetached) {
-      [[EXAnalytics sharedInstance] setUserProperties:@{ @"IS_DETACHED": @YES }];
-    }
-  }
-}
+// - (void)_setAnalyticsPropertiesWithStandaloneManifestUrl:(NSString *)shellManifestUrl
+//                                      isUserDetached:(BOOL)isUserDetached
+// {
+//   if (_testEnvironment == EXTestEnvironmentNone) {
+//     [[EXAnalytics sharedInstance] setUserProperties:@{ @"INITIAL_URL": shellManifestUrl }];
+//     [CrashlyticsKit setObjectValue:_standaloneManifestUrl forKey:@"initial_url"];
+//     if (isUserDetached) {
+//       [[EXAnalytics sharedInstance] setUserProperties:@{ @"IS_DETACHED": @YES }];
+//     }
+//   }
+// }
 
 /**
  *  Is this a valid url scheme for a standalone app?

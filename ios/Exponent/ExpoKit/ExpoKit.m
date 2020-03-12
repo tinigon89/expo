@@ -2,7 +2,7 @@
 
 #import "ExpoKit.h"
 #import "EXViewController.h"
-#import "EXAnalytics.h"
+//#import "EXAnalytics.h"
 #import "EXBuildConstants.h"
 #import "EXEnvironment.h"
 #import "EXKernel.h"
@@ -85,12 +85,12 @@ NSString * const EXAppDidRegisterUserNotificationSettingsNotification = @"kEXApp
 - (void)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [DDLog addLogger:[DDOSLogger sharedInstance]];
-  
+
 
   RCTSetFatalHandler(handleFatalReactError);
 
   // init analytics
-  [EXAnalytics sharedInstance];
+  //[EXAnalytics sharedInstance];
 
   NSString *standaloneGMSKey = [[NSBundle mainBundle].infoDictionary objectForKey:@"GMSApiKey"];
   if (standaloneGMSKey && standaloneGMSKey.length) {
@@ -161,14 +161,14 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandl
       return [EXKernelLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
     } else {
       NSString *path = [webpageURL path];
-      
+
       // Filter out URLs that don't match experience URLs since the AASA pattern's grammar is not as
       // expressive as we'd like and matches profile URLs too
       NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^/@[a-z0-9_-]+/.+$"
                                                                              options:NSRegularExpressionCaseInsensitive
                                                                                error:nil];
       NSUInteger matchCount = [regex numberOfMatchesInString:path options:0 range:NSMakeRange(0, path.length)];
-      
+
       if (matchCount > 0) {
         [EXKernelLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
         return YES;
@@ -178,7 +178,7 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandl
       }
     }
   }
-  
+
   return NO;
 }
 
