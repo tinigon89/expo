@@ -6,7 +6,7 @@
 #import "ExpoKit.h"
 #import "EXEnvironment.h"
 
-#import <Crashlytics/Crashlytics.h>
+//#import <Crashlytics/Crashlytics.h>
 #import <React/RCTUtils.h>
 
 NSString * const kEXEmbeddedBundleResourceName = @"shell-app";
